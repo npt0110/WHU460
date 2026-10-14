@@ -1,0 +1,1547 @@
+<title>PV Drilling HWU 460K</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: engineering viewer — 3D stage left, BOM + part sheet right, full spec sheet below like a drawing title block */
+:root{
+  --bg:#eef0f1; --panel:#ffffff; --ink:#1b2228; --ink-2:#4c5862; --ink-3:#7d8892;
+  --line:#d3d9de; --line-2:#b9c2c9; --accent:#d99a0b; --accent-ink:#7a5300; --accent-soft:#fbefd2;
+  --stage:#dfe4e8; --sel:#1f6fb2; --sel-soft:#e1edf8; --bop:#b3362c;
+  --f-display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --f-body:"Barlow","Segoe UI",Roboto,Arial,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12171b; --panel:#1a2127; --ink:#e6eaee; --ink-2:#aab4bc; --ink-3:#7c8790;
+  --line:#2b343c; --line-2:#3a454e; --accent:#f0b429; --accent-ink:#f6cd6a; --accent-soft:#3a2e12;
+  --stage:#1e262d; --sel:#5aa6e6; --sel-soft:#1d3346; --bop:#e0675c; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12171b; --panel:#1a2127; --ink:#e6eaee; --ink-2:#aab4bc; --ink-3:#7c8790;
+  --line:#2b343c; --line-2:#3a454e; --accent:#f0b429; --accent-ink:#f6cd6a; --accent-soft:#3a2e12;
+  --stage:#1e262d; --sel:#5aa6e6; --sel-soft:#1d3346; --bop:#e0675c; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;padding:0 16px 40px;margin:0}
+.wrap{max-width:1440px;margin:0 auto}
+header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 24px;padding-block:18px 14px;border-bottom:2px solid var(--ink)}
+h1{font-family:var(--f-display);font-weight:700;font-size:clamp(28px,4vw,40px);line-height:1;margin:0;letter-spacing:.01em;text-wrap:balance}
+h1 small{display:block;font-family:var(--f-body);font-weight:500;font-size:14px;color:var(--ink-2);letter-spacing:0;margin-top:6px}
+.tb{display:grid;grid-template-columns:repeat(4,auto);border:1px solid var(--line-2);font-family:var(--f-mono);font-size:11px}
+.tb div{padding:4px 10px;border-left:1px solid var(--line-2)}
+.tb div:first-child{border-left:0}
+.tb b{display:block;font-family:var(--f-body);font-weight:600;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.main{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:16px;margin-top:16px}
+.stage{position:relative;background:var(--stage);border:1px solid var(--line);min-height:420px;height:min(78vh,860px);overflow:hidden}
+#cv{position:absolute;inset:0}
+#cv canvas{display:block;width:100%!important;height:100%!important;touch-action:none}
+.toolbar{position:absolute;top:10px;left:10px;right:10px;display:flex;flex-wrap:wrap;gap:6px;pointer-events:none}
+.toolbar .grp{display:flex;background:var(--panel);border:1px solid var(--line-2);pointer-events:auto}
+.toolbar button{font:500 13px var(--f-body);color:var(--ink);background:transparent;border:0;border-left:1px solid var(--line);padding:6px 10px;cursor:pointer}
+.toolbar .grp button:first-child{border-left:0}
+.toolbar button:hover{background:var(--sel-soft)}
+.toolbar button[aria-pressed="true"]{background:var(--ink);color:var(--panel)}
+button:focus-visible,input:focus-visible{outline:2px solid var(--sel);outline-offset:2px}
+.hint{position:absolute;left:10px;bottom:10px;font-size:12px;color:var(--ink-2);background:var(--panel);border:1px solid var(--line);padding:4px 8px;pointer-events:none}
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px 20px;background:var(--panel);border:1px solid var(--line);border-top:0;padding:12px 14px}
+.ctl{display:flex;align-items:center;gap:10px;min-width:0}
+.ctl label{font-weight:600;font-size:13px;white-space:nowrap}
+.ctl input[type=range]{flex:1;min-width:80px;accent-color:var(--accent)}
+.tubcap{grid-column:1/-1;font-size:13px;line-height:1.4;padding:8px 10px;border-left:3px solid #f0b429;background:var(--bg-2,rgba(127,127,127,.08));border-radius:4px}
+.ctl output{font-family:var(--f-mono);font-size:12px;min-width:92px;text-align:right;font-variant-numeric:tabular-nums}
+.btn{font:600 13px var(--f-body);border:1px solid var(--line-2);background:var(--panel);color:var(--ink);padding:6px 12px;cursor:pointer}
+.btn:hover{border-color:var(--ink)}
+.btn.on{background:var(--accent);border-color:var(--accent);color:#1b1404}
+.vexport{background:var(--panel);border:1px solid var(--line);border-top:0;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.vx-head{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline}
+.vx-head b{font-family:var(--f-display);font-weight:600;font-size:15px;letter-spacing:.1em;text-transform:uppercase}
+.vx-head span{font-size:13px;color:var(--ink-2);min-width:0}
+.vx-row{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:flex-end}
+.vx-row label{display:flex;flex-direction:column;gap:3px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.vx-row select{font:500 13px var(--f-body);color:var(--ink);background:var(--panel);border:1px solid var(--line-2);padding:5px 8px;text-transform:none;letter-spacing:0}
+.vx-row label.chk{flex-direction:row;align-items:center;gap:6px;text-transform:none;letter-spacing:0;font-size:13px;color:var(--ink);font-weight:500;padding-bottom:6px}
+.vx-row input[type=checkbox]{accent-color:var(--accent);width:16px;height:16px}
+#v-bar{width:100%;height:6px;accent-color:var(--accent)}
+aside{display:flex;flex-direction:column;gap:16px;min-width:0}
+.card{background:var(--panel);border:1px solid var(--line)}
+.card h2{font-family:var(--f-display);font-weight:600;font-size:15px;letter-spacing:.1em;text-transform:uppercase;margin:0;padding:10px 14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.card h2 span{font-family:var(--f-mono);font-size:11px;letter-spacing:0;text-transform:none;color:var(--ink-3);font-weight:400}
+#part{padding:14px}
+#part .pos{font-family:var(--f-mono);font-size:12px;color:var(--accent-ink);background:var(--accent-soft);padding:2px 6px;display:inline-block}
+#part h3{font-family:var(--f-display);font-weight:700;font-size:24px;line-height:1.1;margin:8px 0 2px;text-wrap:balance}
+#part .en{font-family:var(--f-mono);font-size:11px;color:var(--ink-3);margin:0 0 10px}
+#part p{margin:0 0 12px;color:var(--ink-2);font-size:14px}
+dl.kv{display:grid;grid-template-columns:minmax(0,46%) minmax(0,1fr);margin:0;border-top:1px solid var(--line)}
+dl.kv dt,dl.kv dd{margin:0;padding:6px 0;border-bottom:1px solid var(--line);font-size:13px}
+dl.kv dt{color:var(--ink-2);padding-right:10px}
+dl.kv dd{font-family:var(--f-mono);font-size:12px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.src{font-size:11px;color:var(--ink-3);margin-top:10px}
+.bom{list-style:none;margin:0;padding:0;max-height:min(46vh,520px);overflow:auto}
+.bom li{display:grid;grid-template-columns:34px minmax(0,1fr) 30px;align-items:center;border-bottom:1px solid var(--line)}
+.bom li.sec{display:block;padding:8px 14px 4px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);font-weight:600;border-bottom:0}
+.bom button.row{all:unset;cursor:pointer;display:contents}
+.bom .n{font-family:var(--f-mono);font-size:11px;color:var(--ink-3);text-align:center;padding:7px 0}
+.bom .t{font-size:13px;padding:7px 4px 7px 0;line-height:1.3}
+.bom .sw{display:inline-block;width:8px;height:8px;margin-right:7px;vertical-align:1px}
+.bom li:hover{background:var(--sel-soft)}
+.bom li.active{background:var(--sel-soft);box-shadow:inset 3px 0 0 var(--sel)}
+.eye{border:0;background:transparent;color:var(--ink-3);cursor:pointer;padding:6px;line-height:0}
+.eye[aria-pressed="false"]{color:var(--line-2)}
+.eye svg{width:16px;height:16px}
+section.spec{margin-top:28px}
+section.spec>h2{font-family:var(--f-display);font-weight:700;font-size:26px;margin:0 0 4px}
+section.spec>p{color:var(--ink-2);margin:0 0 14px;max-width:70ch}
+.sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:16px}
+.sgrid table{width:100%;border-collapse:collapse;font-size:13px}
+.sgrid th,.sgrid td{text-align:left;vertical-align:top;padding:7px 14px;border-bottom:1px solid var(--line)}
+.sgrid th{width:36%;font-weight:600;color:var(--ink-2)}
+.sgrid td{font-variant-numeric:tabular-nums}
+.note{font-size:12px;color:var(--ink-3);margin-top:14px;max-width:90ch}
+@media (max-width:980px){.main{grid-template-columns:minmax(0,1fr)}.stage{height:62vh}.bom{max-height:none}}
+@media (max-width:560px){.tb{grid-template-columns:repeat(2,auto)}.tb div:nth-child(3){border-left:0}.tb div:nth-child(n+3){border-top:1px solid var(--line-2)}.toolbar button{padding:6px 8px;font-size:12px}}
+</style>
+
+<div class="wrap">
+<header class="top">
+  <h1>PV Drilling HWU 460K<small>Hydraulic Workover Unit · Drillmec S.p.A. · 3D model built from the master skid GA drawing</small></h1>
+  <div class="tb" aria-label="Drawing title block">
+    <div><b>Drawing</b>S00012731</div><div><b>Rev</b>IFA02 · 16/01/25</div><div><b>Orig. scale</b>1:60 · A0</div><div><b>Units</b>mm</div>
+  </div>
+</header>
+
+<div class="main">
+  <div>
+    <div class="stage" id="stage">
+      <div id="cv"></div>
+      <div class="toolbar">
+        <div class="grp" role="group" aria-label="View">
+          <button id="v-iso" aria-pressed="true">Isometric</button>
+          <button id="v-front">Front</button>
+          <button id="v-right">Right</button>
+          <button id="v-top">Top</button>
+          <button id="v-basket">Work basket</button>
+          <button id="v-site">Site</button>
+        </div>
+        <div class="grp" role="group" aria-label="Display layers">
+          <button id="t-elev" aria-pressed="true">Elevations</button>
+          <button id="t-dim" aria-pressed="true">Dimensions</button>
+          <button id="t-tag" aria-pressed="true">Tags</button>
+          <button id="t-iso" aria-pressed="false">Isolate</button>
+          <button id="t-night" aria-pressed="false">Night lights</button>
+        </div>
+      </div>
+      <div class="hint">Drag to rotate · scroll to zoom · right-drag to pan · click a component to see its data</div>
+    </div>
+    <div class="controls">
+      <div class="ctl"><label for="stroke">Jack stroke</label><input type="range" id="stroke" min="0" max="100" step="1" value="35"><output id="stroke-o">1,067 mm</output><button class="btn" id="play">Run</button></div>
+      <div class="ctl"><label for="explode">Exploded view</label><input type="range" id="explode" min="0" max="100" step="1" value="0"><output id="explode-o">Assembled</output></div>
+      <div class="ctl"><label for="tub">Tubing make-up</label><input type="range" id="tub" min="0" max="1000" step="1" value="0"><output id="tub-o">Ready</output><button class="btn" id="tub-play" type="button">Run</button><button class="btn" id="tub-reset" type="button">Reset</button></div>
+      <div class="tubcap" id="tub-cap" hidden></div>
+    </div>
+    <div class="vexport" id="vexport" hidden>
+      <div class="vx-head"><b>Export video</b><span id="v-status">Checking video support…</span></div>
+      <div class="vx-row">
+        <label for="v-shot">Shot<select id="v-shot"><option value="tour">Full tour</option><option value="site">Site overview</option><option value="orbit">360° orbit</option><option value="jack">Jack stroke</option><option value="night">Night view (4 s)</option></select></label>
+        <label for="v-res">Size<select id="v-res"><option value="1920x1080">1920 × 1080</option><option value="1280x720">1280 × 720</option><option value="1080x1080">1080 × 1080 square</option><option value="1080x1920">1080 × 1920 vertical</option></select></label>
+        <label for="v-dur">Length<select id="v-dur"><option value="12">12 s</option><option value="20" selected>20 s</option><option value="30">30 s</option><option value="45">45 s</option></select></label>
+        <label class="chk" for="v-cap"><input type="checkbox" id="v-cap" checked>Caption bar</label>
+        <button class="btn" id="v-rec" type="button">Record video</button>
+        <button class="btn on" id="v-save" type="button" hidden>Save</button>
+      </div>
+      <progress id="v-bar" max="1" value="0" hidden></progress>
+    </div>
+  </div>
+
+  <aside>
+    <div class="card">
+      <h2>Component data <span id="part-tag">none selected</span></h2>
+      <div id="part"></div>
+    </div>
+    <div class="card">
+      <h2>Bill of components <span>POS per drawing</span></h2>
+      <ul class="bom" id="bom"></ul>
+    </div>
+  </aside>
+</div>
+
+<section class="spec">
+  <h2>Technical specification</h2>
+  <p>Taken from the PVD HWU short specification. Values are kept in the manufacturer's original units.</p>
+  <div class="sgrid" id="sgrid"></div>
+  <p class="note">Geometry follows the dimensions stated on drawing S00012731 sheets 1–4 (skid length 16,225, rail spacing 15,240, width 3,500, and elevations +2,874 / +3,734 / +8,770 / +11,650 / +14,090 / +16,500 / +36,617). Dimensions not stated on the drawing were scaled from the views and rounded. The wellhead is hypothetical, as noted on the drawing. Positions of the rotary table, manifolds and escape lines are estimates. Auxiliary equipment (power pack, generator, compressor, MCC, accumulator, mud pumps and tanks, diesel tank, pipe racks) is sized and specified from the short spec and the HWU brochure, and laid out on the required 35 × 40 m platform by estimate, since no rig layout drawing was supplied. The model is for presentation and training, not for fabrication.</p>
+</section>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+(function(){
+const PARTS=[
+ {id:'01',pos:'01',grp:'Skid and skidding',name:'Capping beams',en:'CAPPING BEAM + SKIDDING GRIPPER',col:0xd8262e,lvl:0,
+  desc:'Two red capping beams, 1,000 mm high, laid on the platform deck perpendicular to the master skid, letting the whole HWU tower skid to adjacent well slots without removing the BOP. Near both ends of each beam a triangular outrigger braces out to both sides against overturning. On each beam two skidding grippers clamp the top flange, one on each side of the slider channel: the N-S push jack is pinned to the north or south gripper depending on the skid direction. All elevations are measured from the platform deck and include the 1,000 mm beam.',
+  specs:[['Capping beam','15,600 mm long, H 1,000 × 400, flanges 60, web 40'],['Anti-roll outriggers','1,000 mm from each end, both sides (13,600 c/c)'],['Skidding grippers','2 per capping beam (north and south of the slider channel)'],['Beam centre spacing','15,240 mm (50 ft)'],['Well centre to near beam','2,100 mm'],['Material','ASTM A572 Gr.50 or equivalent (yield 355 MPa)'],['Skidding envelope','14 m × 14 m']]},
+ {id:'02',pos:'02',grp:'Skid and skidding',name:'Master skid',en:'MASTER SKID',col:0xd8262e,lvl:0,
+  desc:'Main base frame of two longitudinal box beams carrying the BOP module, jack and decks. The well end carries the tower; the rest acts as counterweight and holds the manifolds.',
+  specs:[['Overall length','16,225 mm'],['Beam centre spacing','3,500 mm'],['Top of skid','+2,874 mm'],['Overhang each end','492.5 mm'],['Splice bolts (Detail D)','28 × M42×180']]},
+ {id:'03',pos:'03',grp:'Skid and skidding',name:'Master skid braces',en:'MASTER SKID - BRACE',col:0xd8262e,lvl:0,
+  desc:'Six transverse cross braces, including one at each end of the skid. Each has a top member bolted to the upper flanges and a bottom member bolted to the lower flanges of the two runners, stiffened by a V brace and two vertical posts, to hold the 3,500 mm spacing and resist twist while skidding.',
+  specs:[['Number of braces','6, incl. one at each skid end'],['Connection','Bolted end plates to the runner webs'],['Brace spacing','≈ 2,600 mm'],['Layout','Per top view, sheet 1']]},
+ {id:'04',pos:'04',grp:'Skid and skidding',name:'Skidding jacks N-S and E-W',en:'N-S / E-W SKIDDING SYSTEM',col:0xd8262e,lvl:0,
+  desc:'N-S: on each red capping beam a slider channel carries two uprights, as high as the master skid runner, that hold the runners; a push cylinder between one upright and a skidding gripper clamped on the capping beam moves both runners together (the gripper on the other side is used to skid the other way). E-W: on each runner a push cylinder lies on the top edge below the base beam of the BOP frame, pinned to the shoe block at one end and to a clamp in the runner top holes at the other, and moves the BOP frame along the master skid on its shoe blocks.',
+  specs:[['N-S jacks','Slider channel + 2 uprights + push cylinder per capping beam, anchored to a skidding gripper'],['E-W push cylinders','1 per runner, on the runner top edge below the BOP frame base beam'],['Time to skid to next slot','12 h (incl. BOP hanging)']]},
+ {id:'BOP',pos:'—',grp:'Well control',name:'BOP stack 13-5/8" 5K',en:'BOP STACK (SHENKAI)',col:0xd8262e,lvl:0,
+  desc:'Bottom to top (3D views 70, 71): single ram, flow cross with two gate valves on each side, double ram with rams slightly shorter than the single ram, annular, short riser spool, and a larger-diameter riser up to the underside of the window basket floor, which has only a round hole of the riser size above it; the riser has a loose side stub for later connections.',
+  specs:[['Annular','13-5/8" spherical, 5,000 psi, API 16A, T20/250, DD/PSL1'],['Double ram','13-5/8" 5,000 psi, pipe ram 2-7/8"–9-5/8" + blind ram, 4 × 3-1/8" 6B R35'],['Single ram','13-5/8" 5,000 psi, fixed pipe ram, 2 × 3-1/8" 6B R35'],['Risers','2 × 2 ft, 2 × 6 ft, 2 × 10 ft, 13-5/8" 5K FLG×FLG'],['Accumulator','3,000 psi, 264 gal oil tank, electric pumps'],['BOP hang-off while skidding','max. 30 MT']]},
+ {id:'PM',pos:'—',grp:'Well control',name:'Pumping manifold',en:'PUMPING MANIFOLD (WINDOW BASKET)',col:0xdfe3e6,lvl:4,
+  desc:'Pumping manifold on the window basket (3D view 72): a header on a pipe stand with two gate valves and a check valve, a tee down to the deck, a riser with a gate valve and an elbow towards the jack column. The inlet end is left open for the pump hose. Position on the deck is estimated.',
+  specs:[['Location','Window basket +8,770, beside the two gin pole support tubes'],['Riser','Bends over at the top and connects to the underside of the jack basket floor'],['Valves','2 × gate valve + 1 × check valve on the header, 1 × gate valve on the riser'],['Inlet','Open flange for the pump hose']]},
+ {id:'06',pos:'06',grp:'Tower structure',name:'BOP module column structure',en:'DES-BOP MODULE - COLUMN STRUCTURE',col:0xd0d4d8,lvl:2,
+  desc:'Four round columns, 3,500 mm apart across the two master skid runners and 4,200 mm apart along each runner, braced on all four faces by two crossing braces, with a top frame 5,200 mm above the top of the runners. Each column is flanged to a large shoe block that grips the top edge of the runner and slides along it; on each runner the two shoes are joined by a horizontal square box beam lying above the E-W push cylinder. There are no base members between the two runners. The window basket sits on four 200 mm round disc bearings flanged to the column tops.',
+  specs:[['Columns','4 round, ≈ 300 mm dia, flanged to the shoes'],['Column centres','3,500 mm across the runners × 4,200 mm along each runner'],['Height','5,200 mm, top of master skid runner to top of frame (+8,074)'],['Base','2 shoe blocks + 1 square box beam per runner, gripping the runner top edge'],['Window basket supports','4 round disc bearings, 200 mm high, flanged']]},
+ {id:'05',pos:'05',grp:'Tower structure',name:'Window basket',en:'DES-BOP MODULE - DECK STRUCTURE',col:0xd0d4d8,lvl:4,
+  desc:'First working deck above the BOP: floor 4,400 × 4,400 mm (stair landings not included), only slightly larger than the BOP frame, extended on the gin pole side for the two support tubes of the crane foot and the stair arrival. It sits on four round disc bearings on the BOP frame columns and has a round centre opening the size of the riser below.',
+  specs:[['Deck elevation','+8,770 mm'],['Floor size','4,400 × 4,400 mm (landings not included); gin pole side edge at the foot of the gin pole support tubes'],['Columns','4 main columns 1,500 mm c/c; gin pole support tubes 1,550 mm beyond the gin pole side pair'],['Supports','4 round disc bearings, 200 mm, on the BOP frame columns'],['Adjusting spool','1 / 2 / 3 / 4 / 5 ft (Detail C)'],['Spool flange','+8,450 mm']]},
+ {id:'07',pos:'07',grp:'Tower structure',name:'Work window module',en:'DES-WW MODULE',col:0xd0d4d8,lvl:6,
+  desc:'Window basket between the window basket and the +11,650 jack basket. Four round columns around the well carry the jack basket; two hollow side tubes on the gin pole side also carry it and serve as the mouse hole and as a passage for lines. Its floor at +8,770 has a square cover in the middle with a round hole for running pipe into the BOP; the BOP top flange stays below the cover.',
+  specs:[['Elevation range','+8,770 → +11,650 mm'],['Columns','4 round support columns + 2 hollow side tubes, ≈ 360 mm dia'],['Side tubes','Mouse hole and line passage, on the gin pole side'],['Column spacing','≈ 1,460 × 1,460 mm (scaled from GA)'],['Through bore','32 in']]},
+ {id:'09',pos:'09',grp:'Tower structure',name:'Jack basket',en:'DES-DRT MODULE - WALKWAY',col:0xd0d4d8,lvl:8,
+  desc:'Second-level working deck with handrail, connected to the stair tower at the back.',
+  specs:[['Deck elevation','+11,650 mm'],['Floor size','5,400 × 4,500 mm']]},
+ {id:'08',pos:'08',grp:'Tower structure',name:'Side deck',en:'DES-DRT MODULE',col:0xd0d4d8,lvl:9,
+  desc:'Dummy rotary table filling the opening of the +11,650 jack basket, under the hydraulic jack assembly, plus the side deck at +14,150 that connects to the emergency ladder. The rotary table position in the model is an estimate.',
+  specs:[['Elevation range','+11,650 → +14,150 mm'],['Top deck','2,300 × 2,300 mm (Section E-E)'],['Rotary table','Drillmec 14-1/2", 60–100 rpm, 20,000 lb-ft'],['Stationary slips','Heavy + snubbing']]},
+ {id:'10',pos:'10',grp:'Jack and work basket',name:'Hydraulic jack system',en:'DES-JS JACK SYSTEM',col:0xd0d4d8,lvl:11,
+  desc:'Jacking system per drawing S00012742 sh.1: four main hydraulic cylinders (dia 298 mm) on a 1,500 mm square hold the pistons; the piston assembly (four piston rods plus two dia 200 mm cylindrical guides) hangs from the rotary substructure with the rotary table on top and travels 3,050 mm. The two cylindrical guides run down into two removable cover guides, one on the gin pole side and one opposite. A spider sits at the bottom on the jack basket.',
+  specs:[['Drawing','S00012742 sh.1 IFA03, jacking system trip in / trip out'],['Main cylinders','4 × dia 298 mm, 1,500 mm square'],['Cylindrical guides','2 × dia 200 mm, in 2 removable cover guides (gin pole side and opposite)'],['Stroke','3,050 mm (120 in)'],['Height, pistons down','4,816 mm, jack basket floor to top of rotary table'],['Interface brackets','Top 3,750 mm above the jack basket floor; outer edges 2,880 × 3,182 mm; upward cone pin on each'],['Bottom spider','OD 540 mm, bore 450 mm'],['Rotary substructure','1,995 × 1,995 × 880 mm; rotary table dia 780 mm, bore 450 mm'],['Max pull / snub','400,000 lb / 230,000 lb'],['Rotary torque / brake','20,000 / 32,000 ft-lb']]},
+ {id:'11',pos:'11',grp:'Jack and work basket',name:'Work basket',en:'DES-WB MODULE',col:0xf2d21b,lvl:13,
+  desc:'U-shaped top deck where the crew operates the jack, slips and tong. Two recesses, front and back, are fenced by handrail on three sides; the front one takes the gin pole, which is brought in from the side. Carries two control panels: the main hydraulic control panel on the floor beside the gin pole, opposite the power tong, and the crane and winch control panel in the opposite corner next to the pipe guide frame.',
+  specs:[['Deck elevation','+16,500 mm'],['Floor size','6,316 × 4,400 mm (drawing S00012870 IFA03)'],['Well centre','3,216 mm from the back end, 3,100 mm from the gin pole end'],['Centre opening','2,215 × 2,220 mm'],['Gin pole recess','1,327 mm wide × 1,680 mm deep'],['Drill pipe guide recess','1,656 mm wide × 978 mm deep'],['Equipment','Power tong, 2 manual tongs, driller panel, crane panel, escape ladder, escape devices, gates'],['Grating','Fibreglass, suitable for ATEX zone']]},
+ {id:'12',pos:'12',grp:'Lifting equipment',name:'Gin pole crane',en:'DES-JB CRANE',col:0xf2d21b,lvl:15,
+  desc:'Three-section telescopic pole with a V-shaped head carrying two sheaves of 580 mm diameter, 1,450 mm apart centre to centre, used to lift tubulars to the work basket. Its foot stands on the jack basket at +11,650, inside the recess of the work basket. Two guy lines on the winch side run from just below the head flange to deadman anchors on the deck.',
+  specs:[['Drawing','S00012755, GA jib pole and crane'],['Max pull','10 t'],['Heights','Foot 1,359 + fixed pole 8,620 + 1st extension 7,325.5 + 2nd extension 7,662 + 667 to sheave centre = 25,645 mm'],['Crown sheaves','1,435 mm c/c'],['Fittings','Ladder, pole guides at the section joints, aviation light, lightning arrester, maintenance platform'],['Top of pole','+36,617 mm'],['Static hook load','10 MT'],['Overall height (spec)','46.3 m'],['Overall dimensions (spec)','34.8 × 30.5 × 46.3 m']]},
+ {id:'14',pos:'14',grp:'Lifting equipment',name:'Jib crane and winches',en:'DES-JB JIB CRANE AND WINCHES',col:0xc8cdd1,lvl:15,
+  desc:'A winch bracket is clamped to the gin pole above the work basket: two collars and paired gusset plates carry a vertical frame column with a short slewing jib on top and the power tong winch at its foot. Two hydraulic counterbalance winches are clamped to the back of the gin pole, facing away from the well, at about the level of the +14,090 side deck; their cables run straight up behind the pole.',
+  specs:[['Hydraulic winches','2 × 10 MT counterbalance, 1 × power tong'],['Tubular length handled','up to 20 m'],['Jib elevation','≈ +22,000 mm (estimated)']]},
+ {id:'15',pos:'15',grp:'Lifting equipment',name:'Hydraulic power tong',en:'POWER TONG (ECKEL 9-5/8)',col:0x1f5fc4,lvl:15,
+  desc:'Hydraulic power tong with open throat, rotary jaw ring and backup, used to make up and break out tubular connections. It hangs from the winch and jib on the gin pole through a spring hanger set behind the throat. In the tubing make-up simulation the jib slews in, the tong winch lifts the tong onto the connection and the tong spins the joint, then the jib slews it back out.',
+  specs:[['Model (3D view)','Eckel 9-5/8 in'],['Suspension','Gin pole winch and jib, spring hanger']]},
+ {id:'16',pos:'16',grp:'Access and safety',name:'Loose lower stairs',en:'LOOSE LOWER STAIRS',col:0xf2d21b,lvl:0,
+  desc:'Stair from the platform deck to the tower landing, on the side opposite the master skid: a first flight to an adjustable landing on four posts, then a second flight up to the tower landing.',
+  specs:[['Intermediate landing','≈ +3,324 mm, adjustable'],['Tower landing','≈ +6,560 mm']]},
+ {id:'17',pos:'17',grp:'Access and safety',name:'Loose upper stairs',en:'LOOSE UPPER STAIRS',col:0xf2d21b,lvl:0,
+  desc:'Stair tower from the tower landing to the +8,770 window basket and the +11,650 jack basket, then one straight flight with no mid landing from the jack basket to the +16,500 work basket, rising in the same direction as the flight below it.',
+  specs:[['Flights','4 (incl. alternative from skid level)'],['From – to','+2,874 → +16,500 mm']]},
+ {id:'EL',pos:'—',grp:'Access and safety',name:'Emergency ladder H.4852',en:'EMERGENCY LADDER GROUP H.4852',col:0xe8862a,lvl:9,
+  desc:'Vertical ladder on the side of the cage, facing at right angles to the deck edge: two round main tubes with round rungs welded between them, the tops standing a little above the work basket handrail. A round red cage of about 800 mm runs from the base platform on the +11,650 jack basket to the work basket and is open towards the jack basket, the +14,090 side deck and the work basket, so the crew walks straight into the ladder from each deck.',
+  specs:[['From – to','+11,650 → +16,500 mm'],['Height','≈ 4,850 mm (H.4852)'],['Rungs','Round steel bar, orange'],['Cage','Hoops from ≈ 2.2 m above the base platform'],['Base','Small platform projecting from the jack basket'],['Drawing code','DR0000001535']]},
+ {id:'20',pos:'20',grp:'Access and safety',name:'Escape device',en:'ESCAPE DEVICE',col:0xd2452f,lvl:13,
+  desc:'Two escape lines down to the platform deck, each starting from the top of a post on the work basket; the two posts stand at diagonally opposite corners of the basket. Ground anchor positions are estimated.',
+  specs:[['Escape devices','3: 2 descenders + 1 emergency ladder'],['Breathing apparatus','3 packs (spec)']]},
+ {id:'PIPE',pos:'—',grp:'Jack and work basket',name:'Tubular string',en:'TUBULAR STRING',col:0x8f98a0,lvl:11,
+  desc:'Illustrative pipe string on the well centre, moving with the jack head while pulling or snubbing. It is drawn down to just above the window basket floor only, not through the BOP.',
+  specs:[['Pipe ram range','2-7/8" – 9-5/8"']]},
+ {id:'PLAT',pos:'—',grp:'Auxiliary equipment',name:'Platform deck 35 × 40 m',en:'PLATFORM REQUIRED',col:0x8d969d,lvl:0,
+  desc:'Deck area the spec requires when all equipment sits on the platform. Auxiliary units are laid out on it in power, mud and pipe-handling zones. The layout is an estimate: no rig layout drawing was supplied.',
+  specs:[['All equipment on platform','35 m × 40 m'],['Alternative','15 m × 15 m mast on platform, rest on barge with flexible connections'],['Equipment sizes','Equipment list for layout'],['Layout positions','Estimated, not from drawing']]},
+ {id:'HPU',pos:'—',grp:'Auxiliary equipment',name:'Hydraulic power pack',en:'HYDRAULIC POWER UNIT (HPU)',col:0x3d6b4f,lvl:0,
+  desc:'Diesel-hydraulic power pack in two units: the HPU engine skid and, coupled to it, the HPU container with the pumps and oil tank. It drives the jack, slips, rotary table, winches and skidding cylinders through the hose bundle to the tower.',
+  specs:[['Engine skid L × W × H','5.65 × 2.55 × 3.2 m, 11 t'],['Container L × W × H','6.2 × 2.55 × 3.2 m, 10 t'],['Engine','Volvo Penta TAD1643VE-B, 565 kW @ 1,900 rpm (spec min. 370 kW)'],['Pumps','4 × axial piston main pumps + 2 × double vane charge pumps'],['Pump drive','Stiebel 4325, input 4,800 Nm @ 900 kW'],['Operating pressure','Dual: 3,000 psi and 5,000 psi'],['Oil tank','3,215 L (spec min. 2,000 L)'],['Cooling','Air/oil heat exchanger'],['Starter','Pneumatic motor'],['Fuel autonomy','12 h continuous'],['Hazardous area','ATEX Zone 2 T3, gas sensors with auto shutdown'],['Standard','API or DNV 2.7-1, containerised with sound attenuation'],['Footprint (model)','≈ 6.1 × 2.4 × 2.6 m, estimated']]},
+ {id:'GEN',pos:'—',grp:'Auxiliary equipment',name:'Generator set',en:'GENERATOR SET',col:0x2f5d8a,lvl:0,
+  desc:'Diesel generator in an enclosure on skid, feeding all AC users through the MCC.',
+  specs:[['Skid L × W × H','6.3 × 2.55 × 3.15 m'],['Weight','12 t'],['Engine','Volvo Penta D13MG, 381 kW @ 1,800 rpm'],['Alternator','Stamford S5L1MC41-1, 497 kVA, 440 V, 3-phase, 60 Hz'],['Brochure rating','approx. 360 kVA, 60 Hz'],['Hazardous area','ATEX Zone 2 T3, dedicated gas detection'],['Protection','Pyroban: surface and exhaust < 200 °C; flame trap and air-inlet shut-off; spark arrestor'],['Ingress protection','Min. IP23'],['ESD','Manual, local and remote'],['Control panel','Volt, amp, lube oil pressure, coolant temp, circuit breaker'],['Standard','API or DNV 2.7-3']]},
+ {id:'AIR',pos:'—',grp:'Auxiliary equipment',name:'Air compressor',en:'AIR COMPRESSOR',col:0xc8502d,lvl:0,
+  desc:'Diesel-driven oil-injected screw compressor supplying rig air, engine air starters and the air-operated BOP remote panels.',
+  specs:[['Diesel air unit L × W × H','6.1 × 2.5 × 3.3 m'],['Weight','12 t'],['Model (short spec)','Compare DLT 1304 C85-14'],['Brochure','Ingersoll Rand, in dedicated container'],['Flow','8.6 m³/min'],['Max. pressure','14 bar'],['Air receiver','100 L'],['Treatment','B-DRY 600 dryer, AAF 0476 filter, after-cooler'],['Protection','Pyroban < 200 °C, auto shutdown on over-pressure and over-temperature, E-stop to air intake valve'],['Hazardous area','ATEX Zone 2']]},
+ {id:'MCC',pos:'—',grp:'Auxiliary equipment',name:'MCC unit',en:'MOTOR CONTROL CENTER',col:0xa8b0b7,lvl:0,
+  desc:'Container with switchgear, motor starters and feeder panels distributing generator power to all AC users on the rig.',
+  specs:[['Container L × W × H','6.5 × 2.55 × 3.2 m'],['Weight','12 t'],['Type','MCC in one container, Drillmec'],['Hazardous area','ATEX Zone 2, gas sensors with auto shutdown'],['Switchgear','For diesel generator commutation'],['Motor starters','Operate and protect all motors, remote start-stop'],['Feeder panel','Power distribution and control'],['HVAC','Air conditioning unit (containerised version)']]},
+ {id:'ACC',pos:'—',grp:'Auxiliary equipment',name:'BOP accumulator unit',en:'ACCUMULATOR UNIT (SHENKAI)',col:0xb3362c,lvl:0,
+  desc:'Closing unit that stores hydraulic energy in bottles and operates the BOP functions, with an air-operated remote panel for the driller.',
+  specs:[['Operating pressure','3,000 psi (well pressure 5,000 psi)'],['Bottles','24 × 11 gal'],['Reservoir','264 gal'],['Valves','9 × 3-position / 4-way function + bypass'],['Pump modules','BOPC T-series electric + M-series air'],['Remote panels','Graphic air-operated driller panel + auxiliary panel'],['Standard','API or DNV 2.7-3']]},
+ {id:'MP',pos:'—',grp:'Auxiliary equipment',name:'Triplex mud pumps',en:'MUD PUMPS × 2',col:0x4a5fa8,lvl:0,
+  desc:'Two triplex pumps on skids, each driven by its own diesel engine skid through a drive shaft, for circulating mud or cement, discharging through the 5,000 psi mud manifold to the well.',
+  specs:[['Pump skid L × W × H','3.5 × 2.5 × 2.5 m, 10 t each'],['Quantity','2 × triplex, single acting'],['Make','Drillmec / Metax (short spec); Derrick listed in brochure'],['Rated input','600 HP @ 120 SPM'],['Stroke','7 in, 25–120 SPM'],['Plunger','3 in – 5 in'],['Max. delivery (5 in)','810 L/min (213 gpm) @ 4,525 psi'],['Max. pressure (3 in)','10,000 psi, 290 L/min (76 gpm)'],['Drive','Diesel, ATEX Zone 2 T3'],['Mud manifold','5,000 psi WP']]},
+ {id:'MT',pos:'—',grp:'Auxiliary equipment',name:'Mud tank system',en:'MUD TANKS',col:0x7f8a92,lvl:0,
+  desc:'Active tank with the shale shaker and the gas buster on top, reserve, trip and mixing tanks with agitators, and the mixing skid with its centrifugal pumps and hopper. Sizes are from the equipment list; positions are estimated.',
+  specs:[['Active tank','7.0 × 2.5 × 5.15 m, 8.5 t (with shale shaker)'],['Reserve tank','6.0 × 2.5 × 3.15 m, 8.6 t'],['Trip tank','5.5 × 2.5 × 3.15 m, 7.3 t'],['Mixing tank','4.8 × 2.5 × 3.15 m, 7.3 t'],['Mixing skid','4.0 × 2.5 × 2.85 m, 4.6 t'],['Gas buster','Drillmec venting gas separator, on the active tank'],['Agitators','On top of each tank']]},
+ {id:'DE',pos:'—',grp:'Auxiliary equipment',name:'Mud pump diesel engines',en:'DIESEL ENGINES × 2',col:0x6b7a3a,lvl:0,
+  desc:'Two diesel engine skids, each in line with and driving one triplex mud pump through a drive shaft.',
+  specs:[['Quantity','2'],['Skid L × W × H','5.5 × 2.5 × 3.3 m each'],['Weight','12 t each'],['Hazardous area','ATEX Zone 2 T3']]},
+ {id:'MGS',pos:'—',grp:'Auxiliary equipment',name:'Mud gas separator (poor boy)',en:'MUD GAS SEPARATOR',col:0x7f8a92,lvl:0,
+  desc:'Poor boy mud gas separator skid that separates gas from the returns before the mud goes to the tanks; the gas is vented away.',
+  specs:[['Skid L × W × H','8.6 × 2.45 × 2.59 m'],['Weight','7.5 t']]},
+ {id:'DT',pos:'—',grp:'Auxiliary equipment',name:'Diesel tank',en:'DIESEL TANK',col:0xd9a12a,lvl:0,
+  desc:'Fuel tank feeding the HPU engine, the mud pump engines, the generator and the air unit.',
+  specs:[['Tank L × W × H','3.2 × 1.85 × 1.4 m'],['Weight','3 t'],['Capacity','≈ 3,100 L'],['Construction','Rectangular, double wall'],['Outlets','6, with sight glass'],['Handling','4 lifting points, forklift pockets'],['Fittings','Manway, lockable filler, vent with gooseneck, earthing']]},
+ {id:'PR',pos:'—',grp:'Auxiliary equipment',name:'Pipe racks',en:'PIPE RACK',col:0x6b5b3e,lvl:0,
+  desc:'Pipe rack opposite the gin pole, in line with the back recess of the work basket: tubulars are pulled from here up to the work basket, sliding against the pipe support in the recess. Layout estimated.',
+  specs:[['Number of racks','4, max. 3 m long each'],['Capacity','50 joints 5-1/2 in total'],['Drill pipe stock','3-1/2" S-135 NC38 × 400 jts; 2-7/8" S-135 NC31 × 50 jts']]}
+];
+const P={};PARTS.forEach(p=>P[p.id]=p);
+
+/* ---------- scene ---------- */
+const host=document.getElementById('cv'), stage=document.getElementById('stage');
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(36,1,0.1,800);
+const renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:false});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+host.appendChild(renderer.domElement);
+const controls=new THREE.OrbitControls(camera,renderer.domElement);
+controls.enableDamping=true;controls.dampingFactor=.08;controls.maxDistance=180;controls.minDistance=3;
+controls.maxPolarAngle=Math.PI*0.495;
+
+const hemi=new THREE.HemisphereLight(0xf2f5f8,0x6d6a60,.75);scene.add(hemi);let NIGHT=false;
+const sun=new THREE.DirectionalLight(0xffffff,.9);
+sun.position.set(-25,55,30);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);
+Object.assign(sun.shadow.camera,{left:-42,right:42,top:48,bottom:-28,near:1,far:180});
+sun.shadow.bias=-0.0006;scene.add(sun);
+const fill=new THREE.DirectionalLight(0xdfe8f2,.35);fill.position.set(30,20,-25);scene.add(fill);
+
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+function applyTheme(){scene.background=new THREE.Color(NIGHT?'#060a12':(css('--stage')||'#dfe4e8'));
+  const dark=matchMedia('(prefers-color-scheme: dark)').matches&&document.documentElement.dataset.theme!=='light'||document.documentElement.dataset.theme==='dark';
+  ground.material.color.set(NIGHT?0x14181c:dark?0x2a3239:0xc4c9cc);grid.material.opacity=NIGHT?.08:dark?.25:.35;}
+const ground=new THREE.Mesh(new THREE.PlaneGeometry(90,70),new THREE.MeshStandardMaterial({color:0xc4c9cc,roughness:1}));
+ground.rotation.x=-Math.PI/2;ground.position.set(4,-0.09,-2);ground.receiveShadow=true;scene.add(ground);
+const grid=new THREE.GridHelper(90,90,0x8c949a,0x8c949a);grid.position.set(4,-0.075,-2);grid.material.transparent=true;scene.add(grid);
+
+/* ---------- part groups and builders ---------- */
+const groups={},mats={};
+PARTS.forEach(p=>{const g=new THREE.Group();g.userData.part=p.id;groups[p.id]=g;scene.add(g);mats[p.id]=[]});
+
+/* ---------- equipment colour scheme (per Drillmec model screenshots) ---------- */
+const PC={RED:0xd8262e,REDD:0xa81c22,REDF:0x8f1a1f,WHT:0xeceef0,WHTD:0xc8cdd1,FLR:0xb9bfc4,YEL:0xf2d21b,YELD:0xd4b512,GRN:0x2f6b3c,BLU:0x1f5fc4,BLUD:0x17499a,RAILG:0xc4c8cc,RACK:0x7d8489,CYAN:0x5fc7d6};
+const GCLASS={};
+[['rail','01 NS_W NS_E'],['red','02 03 04 MS_R MS_L MS_X EW NSJ MSB1 MSB2 MSB3 MSB4 MSB5 MSB6'],['bop','BOP'],['bopm','06 BOPM'],['white','05 07 09 08 10 WWD WW DRTW DRT JACK'],
+ ['yellow','11 16 17 13 WB ST6 LAND ST7A ST8 ST9 ST11 ST15 MAINT'],['redlad','EL'],['gp','12 14 GP GP2 GP3 GPL'],['blue','CB'],['auxj','15 AUXJ'],['bn','19 BN'],['guy','GUY1 GUY2'],['aux','HPU GEN AIR MP MT DE MGS']]
+ .forEach(([k,ids])=>ids.split(' ').forEach(id=>GCLASS[id]=k));
+function PAL(id,c,o){const k=GCLASS[id]||GCLASS[String(id).replace(/_HR$/,'')];if(!k)return c;const grate=c===0x9aa3aa&&o&&o.r===.85;
+  switch(k){
+  case 'rail':return (c===0x56616b||c===0x4b555e)?PC.REDD:PC.RED;
+  case 'red':return (c===0xbfc6cc||c===0x9aa3aa)?c:(c===0x2e373e||c===0x3d4851||c===0x1e3a55)?PC.REDD:PC.RED;
+  case 'bop':return c===0xb3362c?PC.RED:c===0x8f2a22?PC.REDD:(c===0x7c2a24||c===0x6c2a24||c===0x8c4a3c)?PC.REDF:c;
+  case 'bopm':if(c===0x8e979e||c===0xd9a12a)return PC.RED;
+  case 'white':
+    if(grate)return PC.FLR;
+    if(c===0xd9a12a||c===0xc9ced2||c===0xbfc5ca||c===0xb3bac0||c===0xa9b0b6)return PC.WHT;
+    if(c===0xaab1b7||c===0x8e979e)return PC.WHTD;
+    if(c===0x8a929a)return PC.RED;
+    if(id==='JACK'||id==='10'){if(c===0x2b6aa3)return PC.WHTD;if(c===0x1f4f7d)return 0xa9b0b6}
+    return c;
+  case 'yellow':
+    if(grate)return PC.GRN;
+    if(c===0xd9a12a||c===0xe0ad3a)return PC.YEL;
+    if(id==='LAND'&&(c===0x8e979e||c===0x5d6873))return c;
+    if(c===0x7a838a||c===0x8e979e||c===0x9aa3aa||c===0x9aa3ab||c===0xb3bac0)return PC.YELD;
+    if(c===0xa9b0b6)return PC.WHTD;
+    return c;
+  case 'redlad':return c===0xd9a12a?PC.RED:c;
+  case 'gp':if(c===0xd2452f)return PC.BLU;if(c===0x3d7a3a||c===0x2e5e2c)return PC.WHTD;if(c===0x3a4248)return PC.CYAN;if(c===0xd9a12a&&id!=='14'&&id!=='GP')return c;return c;
+  case 'blue':return c===0x3d7a3a?PC.BLU:c===0x2e5e2c?PC.BLUD:c;
+  case 'auxj':return c===0x8a4a9c?PC.WHTD:c===0x5a2f66?PC.BLU:c===0x3a1f45?PC.BLUD:c;
+  case 'bn':return c===0x7d4a2a?PC.RED:c===0x5d3420?PC.REDF:c;
+  case 'guy':return c===0x2f3a42?0x8a9095:c;
+  case 'aux':if(c===0x3d6b4f||c===0x2f5d8a||c===0xc8502d||c===0x4a5fa8||c===0x7f8a92||c===0x6b7a3a)return 0xdfe3e6;
+    if(c===0x30573f||c===0x264d74||c===0xa8411f||c===0x3a4c87||c===0x6a747c)return 0xc3c9cd;
+    if(c===0x6e2a14)return 0x5a636a;if(c===0xd9a12a)return 0xe0452a;return c;}
+  return c}
+function mat(id,color,o){o=o||{};color=PAL(id,color,o);const m=new THREE.MeshStandardMaterial({color:color,metalness:o.m!=null?o.m:.35,roughness:o.r!=null?o.r:.55});
+  m.userData.base=color;mats[id].push(m);return m}
+const cache={};
+function M(id,color,o){const k=id+'|'+color+'|'+(o?JSON.stringify(o):'');return cache[k]||(cache[k]=mat(id,color,o))}
+function add(id,geo,m,x,y,z){const me=new THREE.Mesh(geo,m);me.position.set(x,y,z);me.castShadow=true;me.receiveShadow=true;me.userData.part=id;groups[id].add(me);return me}
+function bx(id,c,x0,x1,y0,y1,z0,z1,o){return add(id,new THREE.BoxGeometry(Math.abs(x1-x0),Math.abs(y1-y0),Math.abs(z1-z0)),M(id,c,o),(x0+x1)/2,(y0+y1)/2,(z0+z1)/2)}
+function cy(id,c,r,x,z,y0,y1,o,seg){return add(id,new THREE.CylinderGeometry(r,r,y1-y0,seg||28),M(id,c,o),x,(y0+y1)/2,z)}
+const UP=new THREE.Vector3(0,1,0);
+function mem(id,c,a,b,r,o,seg){const A=new THREE.Vector3(...a),B=new THREE.Vector3(...b),d=B.clone().sub(A),L=d.length();
+  const me=add(id,new THREE.CylinderGeometry(r,r,L,seg||10),M(id,c,o),0,0,0);me.position.copy(A).add(B).multiplyScalar(.5);
+  me.quaternion.setFromUnitVectors(UP,d.normalize());return me}
+function sq(id,c,a,b,s,o){const A=new THREE.Vector3(...a),B=new THREE.Vector3(...b),d=B.clone().sub(A),L=d.length();
+  const me=add(id,new THREE.BoxGeometry(s,L,s),M(id,c,o),0,0,0);me.position.copy(A).add(B).multiplyScalar(.5);
+  me.quaternion.setFromUnitVectors(UP,d.normalize());return me}
+function cyX(id,c,r,x0,x1,y,z,o,seg){const me=add(id,new THREE.CylinderGeometry(r,r,x1-x0,seg||28),M(id,c,o),(x0+x1)/2,y,z);me.rotation.z=Math.PI/2;return me}
+function cyZ(id,c,r,z0,z1,y,x,o,seg){const me=add(id,new THREE.CylinderGeometry(r,r,z1-z0,seg||28),M(id,c,o),x,y,(z0+z1)/2);me.rotation.x=Math.PI/2;return me}
+
+const RAIL=0xd9a12a, GRATE=0x9aa3aa, STEEL=0xc9ced2;
+/* deck with optional central hole, grating top + perimeter beams */
+function deck(id,x0,x1,z0,z1,y,hole,o){o=o||{};const t=.06,bd=o.beam||.3,bc=o.bc||0x8e979e;
+  if(hole){const[hx0,hx1,hz0,hz1]=hole;
+    bx(id,GRATE,x0,hx0,y-t,y,z0,z1,{r:.85,m:.2});bx(id,GRATE,hx1,x1,y-t,y,z0,z1,{r:.85,m:.2});
+    bx(id,GRATE,hx0,hx1,y-t,y,z0,hz0,{r:.85,m:.2});bx(id,GRATE,hx0,hx1,y-t,y,hz1,z1,{r:.85,m:.2});}
+  else bx(id,GRATE,x0,x1,y-t,y,z0,z1,{r:.85,m:.2});
+  const w=.16;
+  bx(id,bc,x0,x1,y-bd,y-t,z0,z0+w);bx(id,bc,x0,x1,y-bd,y-t,z1-w,z1);
+  bx(id,bc,x0,x0+w,y-bd,y-t,z0,z1);bx(id,bc,x1-w,x1,y-bd,y-t,z0,z1);
+  if(o.rails!==false) railing(id,o.path||[[x0,z0],[x1,z0],[x1,z1],[x0,z1],[x0,z0]],y,o.gaps);
+}
+/* railing along polyline at deck height y; gaps = list of [x,z,radius] to skip */
+function railing(id,path,y,gaps,h){h=h||1.1;gaps=gaps||[];
+  const skip=(x,z)=>gaps.some(g=>Math.hypot(x-g[0],z-g[1])<g[2]);
+  for(let i=0;i<path.length-1;i++){const[ax,az]=path[i],[bx_,bz]=path[i+1],L=Math.hypot(bx_-ax,bz-az),n=Math.max(1,Math.round(L/1.5));
+    for(let k=0;k<n;k++){const t0=k/n,t1=(k+1)/n;const x0=ax+(bx_-ax)*t0,z0=az+(bz-az)*t0,x1=ax+(bx_-ax)*t1,z1=az+(bz-az)*t1;
+      const mx=(x0+x1)/2,mz=(z0+z1)/2;if(skip(mx,mz))continue;
+      mem(id,RAIL,[x0,y+h,z0],[x1,y+h,z1],.024,{m:.3,r:.5},6);
+      mem(id,RAIL,[x0,y+h*.5,z0],[x1,y+h*.5,z1],.02,{m:.3,r:.5},6);
+      const tb=add(id,new THREE.BoxGeometry(Math.hypot(x1-x0,z1-z0),.12,.012),M(id,RAIL,{m:.3,r:.5}),mx,y+.06,mz);tb.rotation.y=-Math.atan2(z1-z0,x1-x0);
+      if(!skip(x0,z0))cy(id,RAIL,.028,x0,z0,y,y+h,{m:.3,r:.5},6);
+      if(!skip(x1,z1))cy(id,RAIL,.028,x1,z1,y,y+h,{m:.3,r:.5},6);}}
+}
+/* straight stair flight: from (x,z0,y0) to (x,z1,y1) along Z, centred at x, width w; or along X when axis='x' */
+function flight(id,axis,c,a0,a1,y0,y1,w,col){col=col||RAIL;const run=a1-a0,rise=y1-y0,n=Math.max(3,Math.round(Math.abs(rise)/.2)),L=Math.hypot(run,rise);
+  const P=(a,y,off)=>axis==='z'?[c+off,y,a]:[a,y,c+off];
+  [-w/2,w/2].forEach(off=>{
+    sq(id,0x7a838a,P(a0,y0+.12,off),P(a1,y1+.12,off),.07);
+    mem(id,col,P(a0,y0+1.0,off),P(a1,y1+1.0,off),.024,{m:.3,r:.5},6);
+    mem(id,col,P(a0,y0+.55,off),P(a1,y1+.55,off),.02,{m:.3,r:.5},6);
+    const np=Math.max(2,Math.round(L/1.6));for(let k=0;k<=np;k++){const t=k/np;const p=P(a0+run*t,y0+rise*t,off);mem(id,col,p,[p[0],p[1]+1.0,p[2]],.026,{m:.3,r:.5},6)}
+  });
+  for(let k=1;k<n;k++){const t=k/n,a=a0+run*t,y=y0+rise*t;
+    const g=axis==='z'?new THREE.BoxGeometry(w,.035,.26):new THREE.BoxGeometry(.26,.035,w);
+    add(id,g,M(id,GRATE,{r:.85,m:.2}),axis==='z'?c:a,y,axis==='z'?a:c);}
+}
+
+/* ---------- floodlights: shared lamp head with its own light beam (lit in night view) ---------- */
+const LAMPS=[],LAMPMATS=[];
+function _lg(id){return typeof grp==='function'?grp(id):groups[id]}
+let OBSL=null,OBSPT=null;
+function lampMat(id){const m=new THREE.MeshStandardMaterial({color:0xf4f6e8,roughness:.25,metalness:0});m.userData={lamp:true};if(mats[id])mats[id].push(m);LAMPMATS.push(m);return m}
+function lampBeam(id,pos,dir,len){len=len||6;const g=new THREE.Group();g.position.set(pos[0],pos[1],pos[2]);g.rotation.order='YXZ';
+  const L=Math.hypot(dir[0],dir[1],dir[2]),dx=dir[0]/L,dy=dir[1]/L,dz=dir[2]/L;g.rotation.y=Math.atan2(dx,dz);g.rotation.x=-Math.asin(dy);
+  const cg=new THREE.ConeGeometry(len*.36,len,24,1,true);cg.rotateX(-Math.PI/2);cg.translate(0,0,len/2);
+  const cm=new THREE.MeshBasicMaterial({color:0xffe9b8,transparent:true,opacity:.07,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending});
+  const cone=new THREE.Mesh(cg,cm);cone.visible=false;cone.userData.part=id;cone.raycast=function(){};g.add(cone);_lg(id).add(g);
+  const l={id,head:g,cone,dir:[dx,dy,dz]};LAMPS.push(l);return l}
+/* floodlight head (housing + lit glass) aimed along dir, set on top of a pole */
+function lampHead(id,pos,dir){const l=lampBeam(id,pos,dir);const g=l.head;
+  const h=new THREE.Mesh(new THREE.BoxGeometry(.4,.28,.16),M(id,0x5a6268));h.position.z=-.06;h.userData.part=id;h.castShadow=true;g.add(h);
+  const f=new THREE.Mesh(new THREE.BoxGeometry(.34,.22,.02),lampMat(id));f.position.z=.03;f.userData.part=id;g.add(f);
+  const k=new THREE.Mesh(new THREE.BoxGeometry(.04,.04,.24),M(id,0x5a6268));k.position.set(0,-.17,-.06);k.userData.part=id;g.add(k);return l}
+/* straight light pole clamped to a handrail post: base at the rail top, heads aimed at the given points */
+function lampPole(id,x,y,z,h,targets){cy(id,0xdcdfe2,.035,x,z,y-1.0,y+h,{},10);bx(id,0x5a6268,x-.06,x+.06,y-.62,y-.52,z-.06,z+.06);bx(id,0x5a6268,x-.06,x+.06,y-.08,y+.02,z-.06,z+.06);
+  targets.forEach((t,i)=>{lampTube(id,[x,y+h-i*.15,z],t,i);});}
+/* long neon tube lamp on top of a handrail pole (as on the work basket): tube leaning towards the target, lit face turned to it */
+function lampTube(id,top,t,i){let hx=t[0]-top[0],hz=t[2]-top[2];const hl=Math.hypot(hx,hz)||1;hx/=hl;hz/=hl;
+  if(i){const r=i%2?1:-1;const qx=hx*Math.cos(.5*r)-hz*Math.sin(.5*r),qz=hx*Math.sin(.5*r)+hz*Math.cos(.5*r);hx=qx;hz=qz;}
+  const ax=new THREE.Vector3(hx*.42,1,hz*.42).normalize(),q=new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0,1,0),ax);
+  const c={x:top[0]+ax.x*.55,y:top[1]+ax.y*.55,z:top[2]+ax.z*.55};
+  const hm=add(id,new THREE.BoxGeometry(.16,1.1,.1),M(id,0x5a6268),c.x,c.y,c.z);hm.quaternion.copy(q);
+  const g=add(id,new THREE.BoxGeometry(.11,1.0,.04),lampMat(id),c.x+hx*.055,c.y,c.z+hz*.055);g.quaternion.copy(q);
+  return lampBeam(id,[c.x+hx*.1,c.y,c.z+hz*.1],[hx,-.75,hz],7);}
+/* ---------- 01 capping beams ---------- */
+/* capping beam per drawing (CAPPING BEAM + SKIDDING GRIPPER): 15,600 long, H 1,000 x 400, flanges 60, web 40, anti-roll triangular outriggers 1,000 from each end braced out to both sides; the slider channel of the N-S skidding stays on top; two skidding grippers clamp the top flange, one on each side of the channel, as the anchor for the N-S push jack when skidding north or south */
+const CZ0=-7.8,CZ1=7.8,CGZ=[-5.1,5.1];
+function cappingBeam(id,X,gid){
+  bx(id,0x5d6873,X-.2,X+.2,-1,-.94,CZ0,CZ1);bx(id,0x5d6873,X-.02,X+.02,-.94,-.06,CZ0,CZ1);bx(id,0x5d6873,X-.2,X+.2,-.06,0,CZ0,CZ1);
+  for(let z=CZ0+.65;z<CZ1-.3;z+=1.3){bx(id,0x56616b,X-.19,X-.02,-.94,-.06,z-.012,z+.012);bx(id,0x56616b,X+.02,X+.19,-.94,-.06,z-.012,z+.012);}
+  bx(id,0x4b555e,X-.2,X+.2,-1,0,CZ0,CZ0+.03);bx(id,0x4b555e,X-.2,X+.2,-1,0,CZ1-.03,CZ1);
+  [CZ0+1,CZ1-1].forEach(zc=>{
+    [-1,1].forEach(s=>{const n=8,L=1.25;
+      bx(id,0x56616b,s>0?X+.02:X-.19,s>0?X+.19:X-.02,-.94,-.06,zc-.2,zc-.18);bx(id,0x56616b,s>0?X+.02:X-.19,s>0?X+.19:X-.02,-.94,-.06,zc+.18,zc+.2);
+      for(let i=0;i<n;i++){const a=.2+i*L/n,b=.2+(i+1)*L/n,h=.72-.42*(i+.5)/n;bx(id,0x5d6873,s>0?X+a:X-b,s>0?X+b:X-a,-.97,-1+h,zc-.15,zc+.15);}
+      bx(id,0x4b555e,s>0?X+.2:X-1.47,s>0?X+1.47:X-.2,-1,-.97,zc-.25,zc+.25);
+      bx(id,0x4b555e,s>0?X+.2:X-.24,s>0?X+.24:X-.2,-.97,-.06,zc-.25,zc+.25);
+      for(let r=0;r<3;r++)[-.12,.12].forEach(d=>cyX(id,0x2e373e,.022,s>0?X+.24:X-.27,s>0?X+.27:X-.24,-.75+r*.22,zc+d,{},8));});
+  });
+  CGZ.forEach((zc,k)=>{const g=gid(k),t=zc<0?1:-1;
+    bx(g,0x4b555e,X-.42,X+.42,0,.12,zc-.35,zc+.35);
+    [-1,1].forEach(s=>{bx(g,0x4b555e,s>0?X+.21:X-.42,s>0?X+.42:X-.21,-.16,0,zc-.35,zc+.35);bx(g,0x4b555e,s>0?X+.12:X-.22,s>0?X+.22:X-.12,-.16,-.08,zc-.35,zc+.35);
+      [-.22,0,.22].forEach(d=>cy(g,0x2e373e,.03,X+s*.32,zc+d,.12,.2,{},8));
+      bx(g,0x46525c,s>0?X+.12:X-.17,s>0?X+.17:X-.12,.12,.42,zc+t*.15-.15,zc+t*.15+.15);});
+    cyX(g,0x2e373e,.05,X-.22,X+.22,.22,zc+t*.2,{},12);
+  });
+}
+const RX=[-2.1,13.14];
+RX.forEach(x=>cappingBeam('01',x,()=>'01'));
+/* ---------- 04 skidding systems ---------- */
+/* N-S skidding: slider channel on the capping beam, two uprights holding the runners, push cylinder pinned to a skidding gripper on the capping beam */
+[-2.1,13.14].forEach(x=>{
+  /* slider box sitting on the capping beam top flange (guide lips under the flange), its top plate carrying the runners */
+  bx('04',0x46525c,x-.34,x+.34,.37,.45,-2.75,2.75);bx('04',0x46525c,x-.34,x-.28,-.12,.45,-2.75,2.75);bx('04',0x46525c,x+.28,x+.34,-.12,.45,-2.75,2.75);
+  bx('04',0x3d4851,x-.28,x-.2,-.12,-.08,-2.75,2.75);bx('04',0x3d4851,x+.2,x+.28,-.12,-.08,-2.75,2.75);bx('04',0x46525c,x-.34,x+.34,-.12,.45,-2.78,-2.75);bx('04',0x46525c,x-.34,x+.34,-.12,.45,2.75,2.78);
+  [-1.75,1.75].forEach(z=>{bx('04',0x46525c,x-.55,x+.55,.37,.45,z-.5,z+.5);[-1,1].forEach(s=>bx('04',0x3d4851,s>0?x+.34:x-.55,s>0?x+.55:x-.34,.05,.37,z-.02,z+.02));});
+  /* two uprights standing tight against the outer edges of the runners */
+  [-1,1].forEach((s,k)=>{const z=s*2.21,u='04';bx(u,0x46525c,x-.32,x+.32,.45,1.874,z-.11,z+.11);bx(u,0x46525c,x-.32,x+.32,1.79,1.874,z-.11-(s<0?.22:0),z+.11+(s>0?.22:0));
+    mem(u,0x46525c,[x-.2,1.7,z+s*.1],[x-.2,.55,z+s*.62],.05,{},8);mem(u,0x46525c,[x+.2,1.7,z+s*.1],[x+.2,.55,z+s*.62],.05,{},8);
+    cyX(u,0x2e373e,.04,x-.36,x+.36,1.25,z,{},8);});
+  /* low push jack lying on the capping beam top flange: rod clevis on the slider box end, barrel eye pinned to the skidding gripper */
+  bx('04',0x46525c,x-.15,x+.15,.05,.35,-2.88,-2.78);
+  cyZ('04',0x46525c,.13,-4.75,-3.5,.2,x,{m:.4,r:.4},20);cyZ('04',0xbfc6cc,.065,-3.5,-2.88,.2,x,{m:.9,r:.2},14);
+  bx('04',0x46525c,x-.1,x+.1,.0,.07,-4.3,-4.0);bx('04',0x46525c,x-.1,x+.1,.1,.32,-4.95,-4.75);
+});
+/* ---------- 02 master skid ---------- */
+const SX0=-2.6125,SX1=13.6125;
+[-1.75,1.75].forEach(z=>{
+  bx('02',0x46525c,SX0,SX1,.45,.5,z-.35,z+.35);
+  bx('02',0x46525c,SX0,SX1,1.824,1.874,z-.35,z+.35);
+  bx('02',0x46525c,SX0,SX1,.5,1.824,z-.28,z-.24);bx('02',0x46525c,SX0,SX1,.5,1.824,z+.24,z+.28);
+  for(let x=SX0+.6;x<SX1;x+=1.32){bx('02',0x3d4851,x-.015,x+.015,.5,1.824,z-.35,z-.28);bx('02',0x3d4851,x-.015,x+.015,.5,1.824,z+.28,z+.35);}
+  for(let x=1.2;x<12.6;x+=.7)cyZ('02',0x2e373e,.06,z-.36,z-.34,1.55,x,{},12);
+});
+[-1.5,1.5].forEach(z=>{for(let x=-2.2;x<13.2;x+=.45)cy('02',0x2e373e,.045,x,z,1.874,1.88,{},10)});
+/* E-W skidding jacks lying on the top edge of each runner, right below the base beam of the BOP frame (site photo): barrel pinned to the shoe block, rod to a clamp that pins into the runner top holes */
+[-1,1].forEach((s,i)=>{const z=s*1.75,J='04';
+  bx(J,0x46525c,-1.63,-1.5,1.9,2.24,z-.13,z+.13);cyZ(J,0x2e373e,.05,z-.16,z+.16,2.07,-1.56,{},12);
+  cyX(J,0x46525c,.15,-1.5,-.2,2.07,z,{m:.4,r:.4},24);cyX(J,0x3d4851,.165,-1.5,-1.38,2.07,z,{},24);cyX(J,0x3d4851,.165,-.32,-.2,2.07,z,{},24);
+  bx(J,0x46525c,-1.1,-.6,1.874,1.93,z-.12,z+.12);
+  cyX(J,0xbfc6cc,.07,-.2,.5,2.07,z,{m:.9,r:.2},16);
+  bx(J,0x46525c,.5,1.0,1.874,2.26,z-.3,z+.3);bx(J,0x3d4851,.5,1.0,2.26,2.3,z-.3,z+.3);cy(J,0x9aa3aa,.05,.75,s*1.5,1.86,2.36,{m:.8,r:.3},12);});
+/* ---------- 03 braces ---------- */
+[-2.3,2.6,5.2,7.8,10.4,13.3].forEach(x=>((x,id)=>{const yt=1.7,yb=.68,zp=1.1;[yt,yb].forEach(y=>{bx(id,0x6c7782,x-.08,x+.08,y-.08,y+.08,-1.32,1.32);[-1,1].forEach(s=>{bx(id,0x6c7782,x-.2,x+.2,y-.14,y+.14,s>0?1.32:-1.4,s>0?1.4:-1.32);[[-.12,y-.08],[.12,y-.08],[-.12,y+.08],[.12,y+.08]].forEach(([dx,yy])=>cyZ(id,0x2e373e,.03,s>0?1.27:-1.32,s>0?1.32:-1.27,yy,x+dx,{},8))})});[-zp,zp].forEach(z=>bx(id,0x6c7782,x-.06,x+.06,yb+.08,yt-.08,z-.06,z+.06));[-1,1].forEach(s=>mem(id,0x6c7782,[x,yt-.08,s*1.0],[x,yb+.08,0],.05,{},8));})(x,'03'));
+/* ---------- wellhead (hypothetical) ---------- */
+const WC=0x6b6f73;
+/* ---------- BOP stack ---------- */
+const BR=0xb3362c,BRD=0x8f2a22,FL=0x7c2a24;
+function flange(id,y,r,c){cy(id,c||FL,r,0,0,y-.07,y+.07);for(let a=0;a<12;a++){const t=a/12*Math.PI*2;cy(id,0x2a2d30,.032,Math.cos(t)*(r-.08),Math.sin(t)*(r-.08),y-.12,y+.12,{},6)}}
+/* bottom to top (3D views 70, 71): single ram, flow cross with two gate valves each side, double ram with slightly shorter rams, annular, short riser spool, large riser up to the underside of the window basket floor with a loose side stub */
+function ram(y0,y1,pairs,E){
+  bx('BOP',BR,-.72,.72,y0+.08,y1-.08,-.42,.42);
+  flange('BOP',y0+.07,.62);flange('BOP',y1-.07,.62);
+  pairs.forEach(py=>{[-1,1].forEach(s=>{const A=v=>s*v;
+    bx('BOP',BRD,s*.72,s*.84,py-.34,py+.34,-.4,.4);
+    cyX('BOP',BR,.3,Math.min(A(.84),A(E-.6)),Math.max(A(.84),A(E-.6)),py,0);
+    cyX('BOP',BRD,.33,Math.min(A(E-.6),A(E-.52)),Math.max(A(E-.6),A(E-.52)),py,0);
+    cyX('BOP',BR,.26,Math.min(A(E-.52),A(E-.24)),Math.max(A(E-.52),A(E-.24)),py,0);
+    cyX('BOP',0x9aa3aa,.05,Math.min(A(E-.24),A(E)),Math.max(A(E-.24),A(E)),py,0,{m:.8,r:.3},10);
+    for(let a=0;a<8;a++){const t=a/8*Math.PI*2;cyX('BOP',0x2a2d30,.025,Math.min(A(E-.64),A(E-.48)),Math.max(A(E-.64),A(E-.48)),py+Math.cos(t)*.29,Math.sin(t)*.29,{},6)}
+  });});
+}
+function gvalve(x0,x1,y){const xc=(x0+x1)/2,w=Math.abs(x1-x0);
+  bx('BOP',BRD,xc-w/2+.05,xc+w/2-.05,y-.17,y+.17,-.17,.17);
+  cyX('BOP',FL,.2,x0<x1?x0:x1,(x0<x1?x0:x1)+.05,y,0,{},18);cyX('BOP',FL,.2,(x0<x1?x1:x0)-.05,x0<x1?x1:x0,y,0,{},18);
+  cyZ('BOP',BR,.1,.17,.36,y,xc,{},14);cyZ('BOP',0x9aa3aa,.025,.36,.5,y,xc,{},8);
+  const hw=add('BOP',new THREE.TorusGeometry(.14,.018,6,22),M('BOP',0x3a4248),xc,y,.5);
+  for(let k=0;k<3;k++)bx('BOP',0x3a4248,xc-.13,xc+.13,y-.01,y+.01,.49,.51).rotation.z=k*Math.PI/3;}
+/* single ram */
+ram(1.874,2.6,[2.237],1.75);
+/* flow cross (drilling spool) with two gate valves on each side */
+cy('BOP',BR,.36,0,0,2.6,3.2);flange('BOP',2.67,.6);flange('BOP',3.13,.6);
+bx('BOP',BR,-.42,.42,2.72,3.08,-.3,.3);
+[-1,1].forEach(s=>{cyX('BOP',BR,.13,s>0?.42:-.62,s>0?.62:-.42,2.9,0,{},16);cyX('BOP',FL,.2,s>0?.6:-.66,s>0?.66:-.6,2.9,0,{},18);
+  gvalve(s*.66,s*1.04,2.9);gvalve(s*1.06,s*1.44,2.9);cyX('BOP',FL,.2,s>0?1.04:-1.06,s>0?1.06:-1.04,2.9,0,{},18);});
+/* double ram, rams slightly shorter than the single ram */
+ram(3.2,4.6,[3.55,4.25],1.5);
+/* annular */
+flange('BOP',4.67,.7);cy('BOP',BR,.74,0,0,4.74,5.2);
+const sph=add('BOP',new THREE.SphereGeometry(.76,32,16,0,Math.PI*2,0,Math.PI/2),M('BOP',BR),0,5.2,0);sph.scale.y=.75;
+for(let a=0;a<20;a++){const t=a/20*Math.PI*2;cy('BOP',0x2a2d30,.04,Math.cos(t)*.66,Math.sin(t)*.66,5.15,5.26,{},6)}
+cy('BOP',BR,.42,0,0,5.6,5.9);flange('BOP',5.95,.58);
+/* short riser spool */
+cy('BOP',0x8c4a3c,.3,0,0,6.02,6.45);flange('BOP',6.5,.58);
+/* large riser up to the underside of the window basket floor (nothing red above the floor, only a round hole) */
+flange('BOP',6.6,.62);cy('BOP',BR,.46,0,0,6.67,7.36);flange('BOP',7.4,.6);
+/* loose side stub on the large riser, left open for later connections */
+[[0,7.08,-.4],[0,7.08,-.72],[0,7.04,-.84],[0,6.95,-.89],[0,6.86,-.9]].reduce((a,b)=>{mem('BOP',BRD,a,b,.085,{},14);return b});cy('BOP',FL,.16,0,-.9,6.78,6.86,{},18);
+/* ---------- 19 bell nipple ---------- */
+/* ---------- 06 column structure ---------- */
+const CS=0xc9ced2,CD=0xaab1b7;
+/* BOP frame (3D view 73, site photo): four round columns, 3,500 mm apart across the two master skid runners and 4,200 mm apart along each runner; frame top 5,200 mm above the top of the master skid runners */
+const FX=2.1,FT=1.874+5.2,FTB=FT-.3;
+/* base of the BOP frame (3D views 74, 75, site photo): on each master skid runner two large shoe blocks that grip the top edge of the runner and slide along it, joined by a horizontal square box beam lying above the E-W push cylinder; no base members between the two runners */
+const CB0=2.95;
+[-1.75,1.75].forEach(z=>{
+  bx('06',CS,-FX+.42,FX-.42,2.42,2.7,z-.14,z+.14);});
+[[-FX,-1.75],[FX,-1.75],[FX,1.75],[-FX,1.75]].forEach(([x,z])=>{
+  /* shoe block: wide body on the runner top, tapered head, clamp hooks under the runner top flange */
+  bx('06',CS,x-.42,x+.42,1.874,2.55,z-.42,z+.42);
+  [-1,1].forEach(s=>{bx('06',CS,x-.42,x+.42,1.76,1.874,s>0?z+.36:z-.42,s>0?z+.42:z-.36);bx('06',CD,x-.42,x+.42,1.77,1.81,s>0?z+.29:z-.42,s>0?z+.42:z-.29);
+    bx('06',CD,x-.42,x+.42,2.0,2.04,s>0?z+.42:z-.45,s>0?z+.45:z-.42);});
+  [-1,1].forEach(s=>{const sl=add('06',new THREE.BoxGeometry(.84,.04,.36),M('06',CD),x,2.7,z+s*.33);sl.rotation.x=s*.75;const sx=add('06',new THREE.BoxGeometry(.04,.36,.84),M('06',CD),x+s*.33,2.7,z);sx.rotation.z=-s*.75;});
+  bx('06',CS,x-.28,x+.28,2.55,2.85,z-.28,z+.28);
+  [-.2,0,.2].forEach(d=>{bx('06',CD,x+d-.012,x+d+.012,1.9,2.55,z-.44,z+.44);});
+  cyZ('06',0x2a2d30,.07,z-.47,z+.47,1.9,x,{},14);
+  /* flanged joint shoe / round column */
+  cy('06',CD,.27,x,z,2.85,2.9,{},32);cy('06',CD,.27,x,z,2.9,CB0,{},32);
+  for(let k=0;k<8;k++){const t=k/8*Math.PI*2;cy('06',0x2a2d30,.022,x+Math.cos(t)*.22,z+Math.sin(t)*.22,2.83,CB0+.03,{},6)}
+  cy('06',CS,.15,x,z,CB0,FT,{m:.3,r:.5},28);
+  for(let k=0;k<4;k++){const t=k/4*Math.PI*2;bx('06',CD,x+Math.cos(t)*.2-.012,x+Math.cos(t)*.2+.012,CB0,CB0+.25,z+Math.sin(t)*.2-.012,z+Math.sin(t)*.2+.012);}
+  /* round disc bearing, 200 mm high, flanged to the column top: carries the window basket */
+  cy('06',0xaab1b7,.2,x,z,FT,FT+.04,{},32);cy('06',0xaab1b7,.16,x,z,FT+.04,FT+.16,{},32);cy('06',0xaab1b7,.2,x,z,FT+.16,FT+.2,{},32);
+  for(let k=0;k<8;k++){const t=k/8*Math.PI*2;cy('06',0x2a2d30,.022,x+Math.cos(t)*.175,z+Math.sin(t)*.175,FT-.02,FT+.22,{},6)}
+});
+/* top frame of the BOP frame */
+[-1.75,1.75].forEach(z=>bx('06',CS,-FX,FX,FTB,FT,z-.13,z+.13));[-FX,FX].forEach(x=>bx('06',CS,x-.13,x+.13,FTB,FT,-1.75,1.75));
+/* two crossing braces on all four faces, from the column feet to the top frame */
+[-1.75,1.75].forEach(z=>{mem('06',CD,[-FX+.2,CB0+.1,z],[FX-.2,FTB,z],.08,{},10);mem('06',CD,[FX-.2,CB0+.1,z],[-FX+.2,FTB,z],.08,{},10);});
+[-FX,FX].forEach(x=>{mem('06',CD,[x,CB0+.1,-1.55],[x,FTB,1.55],.08,{},10);mem('06',CD,[x,CB0+.1,1.55],[x,FTB,-1.55],.08,{},10);});
+/* ---------- 05 BOP module deck +7770 ---------- */
+/* window basket floor 4,400 x 4,400 mm, its gin pole side edge at the foot of the two gin pole support tubes, 4,400 mm plus the full-width extension on the gin pole side that carries the two support tubes of the crane foot and the stair arrival (stair landings not included). Floor structure 496 mm deep, sitting on the four disc bearings on the BOP frame */
+deck('05',-2.2,2.2,-2.51,1.89,7.77,[-.6,.6,-.6,.6],{beam:.496,path:[[-2.2,-2.51],[1.2,-2.51],[2.2,-2.51],[2.2,1.89],[-2.2,1.89],[-2.2,-1.51],[-2.2,-2.51]],gaps:[[1.71,-2.51,.3],[-2.2,-2.01,.45]]});
+/* light poles on the window basket handrail: short straight poles so the lamps stay below the jack basket, all aimed outwards */
+[[2.2,1.89,[[7,4,7]]],[-2.2,1.89,[[-7,4,7]]],[2.2,-1.2,[[8,4,-1.2]]],[-2.2,.4,[[-8,4,.4]]],[-.9,-2.51,[[-.9,4,-8]]]].forEach(([x,z,T])=>lampPole('05',x,8.87,z,.12,T));
+/* round hole in the middle of the window basket floor, the size of the riser below */
+{const sh=new THREE.Shape();sh.moveTo(-.6,-.6);sh.lineTo(.6,-.6);sh.lineTo(.6,.6);sh.lineTo(-.6,.6);sh.lineTo(-.6,-.6);const hp=new THREE.Path();hp.absarc(0,0,.48,0,Math.PI*2,false);sh.holes.push(hp);
+ const g=new THREE.ExtrudeGeometry(sh,{depth:.06,bevelEnabled:false,curveSegments:40});g.rotateX(-Math.PI/2);add('05',g,M('05',GRATE,{r:.85,m:.2}),0,7.71,0);
+ const cm=M('05',0x8e979e,{m:.3,r:.5});const c=add('05',new THREE.CylinderGeometry(.49,.49,.2,40,1,true),cm,0,7.66,0);}
+for(let x=-1.6;x<=1.6;x+=.8){if(Math.abs(x)<.1){bx('05',0x8e979e,x-.06,x+.06,7.274,7.71,-2.51,-.62);bx('05',0x8e979e,x-.06,x+.06,7.274,7.71,.62,1.89);[-.62,.62].forEach(z=>bx('05',0x8e979e,-.62,.62,7.274,7.71,z-.06,z+.06));}else bx('05',0x8e979e,x-.06,x+.06,7.274,7.71,-2.51,1.89);}
+[-1.75,1.75].forEach(z=>bx('05',0x8e979e,-2.2,2.2,7.274,7.71,z-.08,z+.08));
+/* ---------- PM pumping manifold on the window basket ---------- */
+/* pumping manifold on the +8,770 window basket (3D views 72, 76): beside the two gin pole support tubes; header with two gate valves and a check valve on pipe stands, inlet end left open for the pump hose, a tee down to the deck, and at the far end a riser with a gate valve whose top bends over and runs up to connect to the underside of the jack basket floor */
+{const F=7.77,Z=-1.75,Y=F+.95,PW=0xdfe3e6,PV=0xc8cdd1,HW=0x3a4248,JB=10.35;
+ const hv=(x,y,z,ax)=>{const t=add('PM',new THREE.TorusGeometry(.13,.017,6,22),M('PM',HW),x,y,z);if(ax==='y')t.rotation.x=Math.PI/2;return t};
+ cyX('PM',PW,.07,-1.25,.95,Y,Z,{},16);cyX('PM',PV,.14,-1.32,-1.25,Y,Z,{},18);
+ [[-.85,'g'],[-.4,'c'],[.05,'g']].forEach(([x,k])=>{cyX('PM',PV,.14,x-.2,x-.15,Y,Z,{},18);cyX('PM',PV,.14,x+.15,x+.2,Y,Z,{},18);
+   if(k==='g'){bx('PM',PV,x-.15,x+.15,Y-.15,Y+.15,Z-.13,Z+.13);cy('PM',PV,.08,x,Z,Y+.15,Y+.4,{},14);cy('PM',0x9aa3aa,.02,x,Z,Y+.4,Y+.55,{},8);hv(x,Y+.55,Z,'y');}
+   else{bx('PM',PV,x-.15,x+.15,Y-.13,Y+.13,Z-.12,Z+.12);cy('PM',PV,.11,x,Z,Y+.13,Y+.3,{},14);}});
+ cy('PM',PV,.12,.5,Z,Y-.14,Y+.14,{},18);cy('PM',PW,.07,.5,Z,F+.12,Y-.14,{},16);cy('PM',PV,.14,.5,Z,F+.12,F+.18,{},18);bx('PM',0x8e979e,.25,.75,F,F+.12,Z-.25,Z+.25);
+ [[.95,Y,Z],[1.0,Y+.02,Z],[1.03,Y+.08,Z],[1.05,Y+.2,Z],[1.05,F+1.85,Z],[1.07,F+2.0,Z],[1.15,F+2.1,Z],[1.28,F+2.16,Z],[1.38,F+2.25,Z],[1.4,F+2.4,Z],[1.4,JB-.1,Z]].reduce((a,b)=>{mem('PM',PW,a,b,.07,{},14);return b});
+ bx('PM',PV,.9,1.2,F+1.3,F+1.6,Z-.13,Z+.13);cyZ('PM',PV,.08,Z+.13,Z+.38,F+1.45,1.05,{},14);cyZ('PM',0x9aa3aa,.02,Z+.38,Z+.5,F+1.45,1.05,{},8);hv(1.05,F+1.45,Z+.5,'z');
+ cy('PM',PV,.14,1.4,Z,JB-.1,JB-.04,{},18);cy('PM',PV,.14,1.4,Z,JB-.04,JB,{},18);bx('PM',0x8e979e,1.2,1.6,JB-.02,JB,Z-.2,Z+.2);
+ [-1.05,.25].forEach(x=>{cy('PM',0x8e979e,.04,x,Z,F,Y-.07,{},10);bx('PM',0x8e979e,x-.12,x+.12,F,F+.02,Z-.12,Z+.12);bx('PM',0x8e979e,x-.1,x+.1,Y-.1,Y-.07,Z-.1,Z+.1);});
+}
+/* ---------- 07 WW window module ---------- */
+/* six columns (spacing and diameters scaled from GA S00012731 right view): four round columns around the well carry the +11,650 jack basket; two hollow side tubes on the gin pole side also carry it and serve as mouse hole and line passage */
+/* four main window module columns on a 1,500 mm square; the two gin pole support tubes 1,550 mm beyond the gin pole side pair */
+const WWC=.75;
+[[-1,-1],[1,-1],[1,1],[-1,1]].forEach(([sx,sz])=>{const x=sx*WWC,z=sz*WWC;cy('07',0xbfc5ca,.15,x,z,7.77,10.38,{m:.3,r:.5},24);cy('07',0xbfc5ca,.21,x,z,7.77,7.85,{},24);});
+{const tm=M('07',0xbfc5ca,{m:.31,r:.5});tm.side=THREE.DoubleSide;
+ /* the two gin pole support tubes stand 2,300 mm from the well centre on the gin pole side and carry the gin pole foot on the jack basket right above (3D view 76) */
+ [[-WWC,-2.3],[WWC,-2.3]].forEach(([x,z])=>{add('07',new THREE.CylinderGeometry(.15,.15,2.88,28,1,true),tm,x,9.21,z);cy('07',0xbfc5ca,.21,x,z,7.77,7.85,{},24);
+   const r=add('07',new THREE.TorusGeometry(.16,.03,8,28),M('07',0xd8262e),x,10.66,z);r.rotation.x=Math.PI/2;});}
+/* ---------- 09 DRT walkway +10650 ---------- */
+/* jack basket floor 4,400 x 5,500 mm */
+/* jack basket floor 5,400 mm (along the master skid) x 4,500 mm, set towards the gin pole side; the jacking unit stays on the well centre and the gin pole foot sits over the two support tubes below (3D view 76) */
+deck('09',-2.25,2.25,-3.2,2.2,10.65,[-1.15,1.15,-1.15,1.15],{beam:.3,path:[[-2.25,-3.2],[2.25,-3.2],[2.25,-.5],[2.25,.5],[2.25,2.2],[-2.25,2.2],[-2.25,1.2],[-2.25,-2.27],[-2.25,-3.2]],gaps:[[-2.25,1.7,.45],[-2.25,-2.73,.45],[2.25,0,.3]]});
+/* light poles on the jack basket handrail corners, lamps aimed in over the basket */
+[[2.25,-3.2],[2.25,2.2],[-2.25,2.2],[-2.25,-3.2]].forEach(([x,z])=>lampPole('09',x,11.75,z,1.6,[[0,10.65,-.15]]));
+/* ---------- 08 DRT module ---------- */
+/* dummy rotary table: infill deck in the +11,650 jack basket opening, rotary table below it (position estimated) */
+deck('08',-1.15,1.15,-1.15,1.15,10.65,[-.55,.55,-.55,.55],{rails:false,beam:.25,bc:0xb3bac0});
+/* side deck 2,700 x 1,300 mm at +14,150 (2,500 above the jack basket), centred between the two main jack columns: inner edge clamped to the columns, outer edge carried by two pipes standing on the jack basket that also form the handrail posts; no legs in the way on the jack basket (3D views 68, 69) */
+deck('08',.98,2.28,-1.35,1.35,13.15,null,{beam:.2,rails:false});
+railing('08',[[.98,-1.35],[2.28,-1.35],[2.28,-.3]],13.15);railing('08',[[2.28,.3],[2.28,1.35],[.98,1.35]],13.15);sgate('08',2.28,-.3,2.28,.3,13.15);
+[-1.3,1.3].forEach(z=>{cy('08',0xb3bac0,.05,2.24,z,10.65,14.25,{},12);bx('08',0xb3bac0,2.12,2.36,10.65,10.68,z-.12,z+.12);});
+[-.75,.75].forEach(z=>{cy('08',0xb3bac0,.21,.75,z,12.93,13.15,{},24);bx('08',0xb3bac0,.98,1.12,12.75,13.15,z-.1,z+.1);});
+/* ---------- 10 jack system ---------- */
+/* jacking system per drawing S00012742 sh.1 IFA03 (trip in / trip out):
+   - four main hydraulic cylinders, dia 298 mm, on a 1,500 mm square, each holding a piston; stroke 3,050 mm
+   - two removable cover guides (troughs), one on the gin pole side and one opposite, protecting the two dia 200 mm cylindrical guides of the piston assembly
+   - piston assembly: four piston rods running in the cylinders and the two cylindrical guides, all hung from the rotary substructure on top
+   - spider at the bottom: outside dia 540 mm, bore 450 mm
+   - rotary substructure with rotary table on top: 1,995 x 1,995 mm, 880 mm high, rotary table dia 780 mm, bore 450 mm; top of rotary table 4,816 mm above the jack basket floor with the pistons fully down */
+const JX=[[.75,.75],[-.75,.75],[-.75,-.75],[.75,-.75]],JG=[[0,.75],[0,-.75]];
+/* jacking system lower section (3D view 82): two rounded-corner plates, solid across the middle, with the bottom spider in the centre; the side plates between them sit flush with the rounded corners (nothing sticking out),
+   and along the middle of each side the bottom plate and side web are cut back so the frame bears on the deck only at the corners; radial gussets round each cylinder foot, lifting padeyes, pinned feet of the two cover guides */
+{const Y0=10.65,T=.05,H=.24,O=.98,RR=.22,RC=.5,RD=.1;
+ function basePlate(y,recess){const sh=new THREE.Shape();
+   sh.moveTo(-O+RR,-O);
+   if(recess){sh.lineTo(-RC,-O);sh.lineTo(-RC+.06,-O+RD);sh.lineTo(RC-.06,-O+RD);sh.lineTo(RC,-O);}
+   sh.lineTo(O-RR,-O);sh.absarc(O-RR,-O+RR,RR,-Math.PI/2,0,false);
+   if(recess){sh.lineTo(O,-RC);sh.lineTo(O-RD,-RC+.06);sh.lineTo(O-RD,RC-.06);sh.lineTo(O,RC);}
+   sh.lineTo(O,O-RR);sh.absarc(O-RR,O-RR,RR,0,Math.PI/2,false);
+   if(recess){sh.lineTo(RC,O);sh.lineTo(RC-.06,O-RD);sh.lineTo(-RC+.06,O-RD);sh.lineTo(-RC,O);}
+   sh.lineTo(-O+RR,O);sh.absarc(-O+RR,O-RR,RR,Math.PI/2,Math.PI,false);
+   if(recess){sh.lineTo(-O,RC);sh.lineTo(-O+RD,RC-.06);sh.lineTo(-O+RD,-RC+.06);sh.lineTo(-O,-RC);}
+   sh.lineTo(-O,-O+RR);sh.absarc(-O+RR,-O+RR,RR,Math.PI,Math.PI*1.5,false);
+   const g=new THREE.ExtrudeGeometry(sh,{depth:T,bevelEnabled:false,curveSegments:6});g.rotateX(-Math.PI/2);add('10',g,M('10',0xc9ced2),0,y,0);}
+ basePlate(Y0,true);basePlate(Y0+H-T,false);
+ [-1,1].forEach(k=>{[-1,1].forEach(m=>{const a=m*(RC+O-RR)/2,hw=(O-RR-RC)/2;
+     bx('10',0xaab1b7,a-hw,a+hw,Y0+T,Y0+H-T,k*(O-.01)-.01,k*(O-.01)+.01);bx('10',0xaab1b7,k*(O-.01)-.01,k*(O-.01)+.01,Y0+T,Y0+H-T,a-hw,a+hw);});
+   bx('10',0xaab1b7,-RC,RC,Y0+.11,Y0+H-T,k*(O-RD)-.01,k*(O-RD)+.01);bx('10',0xaab1b7,k*(O-RD)-.01,k*(O-RD)+.01,Y0+.11,Y0+H-T,-RC,RC);
+   bx('10',0xaab1b7,-.5,.5,Y0+T,Y0+H-T,k*.57-.01,k*.57+.01);bx('10',0xaab1b7,k*.57-.01,k*.57+.01,Y0+T,Y0+H-T,-.5,.5);});
+ /* bottom spider in the centre of the solid top plate (OD 540, bore 450) */
+ cy('10',0x8e979e,.27,0,0,Y0+H,Y0+H+.2,{},36);cy('10',0x24292d,.225,0,0,Y0+H+.2,Y0+H+.205,{},32);
+ for(let k=0;k<4;k++){const a=k/4*Math.PI*2+Math.PI/4,g=new THREE.Shape();g.moveTo(0,0);g.lineTo(.22,0);g.lineTo(0,.18);g.lineTo(0,0);const eg=new THREE.ExtrudeGeometry(g,{depth:.02,bevelEnabled:false});eg.translate(0,0,-.01);eg.rotateY(-a);add('10',eg,M('10',0xaab1b7),Math.cos(a)*.27,Y0+H,Math.sin(a)*.27);}
+ for(let k=0;k<3;k++){const a=k/3*Math.PI*2;bx('10',0x5a6268,Math.cos(a)*.18-.05,Math.cos(a)*.18+.05,Y0+H+.05,Y0+H+.22,Math.sin(a)*.18-.05,Math.sin(a)*.18+.05);}
+ JX.forEach(([x,z])=>{cy('10',0xc9ced2,.149,x,z,Y0+H,14.5,{m:.35,r:.45},24);cy('10',0xaab1b7,.19,x,z,14.3,14.5,{},24);
+   for(let k=0;k<8;k++){const a=k/8*Math.PI*2,g=new THREE.Shape();g.moveTo(0,0);g.lineTo(.14,0);g.lineTo(0,.5);g.lineTo(0,0);const eg=new THREE.ExtrudeGeometry(g,{depth:.02,bevelEnabled:false});eg.translate(0,0,-.01);eg.rotateY(-a);add('10',eg,M('10',0xaab1b7),x+Math.cos(a)*.149,Y0+H,z+Math.sin(a)*.149);}});
+ [[.42,.97],[-.42,-.97],[.97,-.42],[-.97,.42]].forEach(([x,z])=>{const ex=Math.abs(x)>.9;bx('10',0xaab1b7,x-(ex?.01:.09),x+(ex?.01:.09),Y0+H,Y0+H+.16,z-(ex?.09:.01),z+(ex?.09:.01));
+   const t=add('10',new THREE.TorusGeometry(.04,.012,6,14),M('10',0x5a6268),x,Y0+H+.1,z);if(ex)t.rotation.y=Math.PI/2;});
+ [-1,1].forEach(s=>{[-.15,.15].forEach(x=>bx('10',0xaab1b7,x-.012,x+.012,Y0+H,Y0+H+.22,s*.75-.12,s*.75+.12));cyX('10',0x5a6268,.035,-.2,.2,Y0+H+.13,s*.75,{},10);});}
+cy('10',0xd8262e,.153,.75,.75,12.6,12.7,{},24);cy('10',0xd8262e,.153,-.75,.75,12.6,12.7,{},24);
+/* tie beams between the four cylinders, set below the brackets, each with two square struts rising in a V from its middle to the two cylinders (3D view 81); the cover guides are pinned to the beams; no diagonal bracing along the cylinder bodies */
+{const TB=13.2,TT=13.45,SY=14.1;
+ /* on the gin pole side and opposite the beams stop at the cover guide, which is pinned between them, so the cylindrical guide runs free */
+ [-.75,.75].forEach(z=>{[-1,1].forEach(k=>{bx('10',0xc9ced2,k>0?.2:-.75,k>0?.75:-.2,TB,TT,z-.11,z+.11);mem('10',0xaab1b7,[k*.22,TT,z],[k*.68,SY,z],.06,{},4);});});
+ [-.75,.75].forEach(x=>{bx('10',0xc9ced2,x-.11,x+.11,TB,TT,-.75,.75);[-1,1].forEach(k=>mem('10',0xaab1b7,[x,TT,0],[x,SY,k*.68],.06,{},4));});}
+/* two removable cover guides (U troughs, open towards the well) protecting the cylindrical guides */
+[-1,1].forEach(s=>{const z=s*.75;
+  bx('10',0xaab1b7,-.18,.18,11.12,14.55,s>0?z+.16:z-.18,s>0?z+.18:z-.16);
+  [-.18,.16].forEach(x=>bx('10',0xaab1b7,x,x+.02,11.12,14.55,s>0?z-.12:z-.18,s>0?z+.18:z+.12));
+  for(let y=11.3;y<14.5;y+=.8)[-.2,.18].forEach(x=>bx('10',0x5a6268,x,x+.02,y,y+.12,s>0?z+.1:z-.17,s>0?z+.17:z-.1));});
+/* drill floor interface: four pedestal brackets from the cylinder heads out to the four corners, outer edges 2,880 mm across the master skid runners and 3,182 mm along them (3D view 80);
+   top of the brackets 3,750 mm above the jack basket floor; the top rises slightly towards the tail, which carries an upward cone pin; the four round posts under the work basket drop onto these pins */
+const JPIN=[[1,1],[-1,1],[-1,-1],[1,-1]].map(([sx,sz])=>[sx*1.18,sz*1.375]);
+{const BY=10.65+3.75,BH=1.0,RISE=.1,V=THREE.Vector3;
+ [[1,1],[-1,1],[-1,-1],[1,-1]].forEach(([sx,sz],i)=>{const cx=sx*.75,cz=sz*.75,hx=JPIN[i][0],hz=JPIN[i][1],L=Math.hypot(hx-cx,hz-cz)+.2,an=Math.atan2(hz-cz,hx-cx);
+  const sh=new THREE.Shape();sh.moveTo(-.15,-RISE);sh.lineTo(L,0);sh.lineTo(L,-.3);sh.lineTo(L*.5,-.45);sh.lineTo(.05,-BH);sh.lineTo(-.15,-BH);sh.lineTo(-.15,-RISE);
+  [-.14,.14].forEach(o=>{const g=new THREE.ExtrudeGeometry(sh,{depth:.025,bevelEnabled:false});g.translate(0,0,o-.0125);g.rotateY(-an);add('10',g,M('10',0xb0b6bb),cx,BY,cz);});
+  const ca=Math.cos(an),sa=Math.sin(an),p0=new V(cx-ca*.15,BY-RISE,cz-sa*.15),p1=new V(cx+ca*L,BY,cz+sa*L),d=p1.clone().sub(p0);
+  const tf=add('10',new THREE.BoxGeometry(d.length(),.05,.34),M('10',0xb0b6bb),(p0.x+p1.x)/2,(p0.y+p1.y)/2-.02,(p0.z+p1.z)/2);tf.quaternion.setFromUnitVectors(new V(1,0,0),d.normalize());
+  const bf=add('10',new THREE.BoxGeometry(L*.55,.04,.3),M('10',0xb0b6bb),cx+ca*(L*.75),BY-.38,cz+sa*(L*.75));bf.rotation.y=-an;
+  bx('10',0xb0b6bb,hx-.22,hx+.22,BY-.3,BY,hz-.22,hz+.22);
+  cy('10',0x8e979e,.11,hx,hz,BY,BY+.22,{},16);add('10',new THREE.CylinderGeometry(.03,.11,.18,16),M('10',0x8e979e),hx,BY+.31,hz);
+  const lug=add('10',new THREE.BoxGeometry(.03,.2,.22),M('10',0xb0b6bb),cx+ca*.5,BY+.05,cz+sa*.5);lug.rotation.y=-an;
+  cy('10',0x8e979e,.2,cx,cz,14.5,14.58,{},24);});}
+const rods=JX.map(([x,z])=>{const r=add('10',new THREE.CylinderGeometry(.09,.09,1,20),M('10',0xdde2e6,{m:.6,r:.3}),x,0,z);return r});
+/* piston assembly head: rotary substructure 1,995 x 1,995 x 880 mm with the rotary table; the four piston rods and the two cylindrical guides hang from it */
+const head=new THREE.Group();groups['10'].add(head);
+function hadd(geo,c,x,y,z,o){const m=new THREE.Mesh(geo,M('10',c,o));m.position.set(x,y,z);m.castShadow=true;m.userData.part='10';head.add(m);return m}
+const RS=1.995/2;
+/* rotary substructure: two heavy plates with a spacer between; hydraulic rotary table in an open frame cage on top, closed by the rotary table cover with the spider interface ring (3D view 78) */
+function rplate(w,t,y,c){const r=.12,h=w/2,sh=new THREE.Shape();sh.moveTo(-h+r,-h);sh.lineTo(h-r,-h);sh.absarc(h-r,-h+r,r,-Math.PI/2,0,false);sh.lineTo(h,h-r);sh.absarc(h-r,h-r,r,0,Math.PI/2,false);sh.lineTo(-h+r,h);sh.absarc(-h+r,h-r,r,Math.PI/2,Math.PI,false);sh.lineTo(-h,-h+r);sh.absarc(-h+r,-h+r,r,Math.PI,Math.PI*1.5,false);
+  const g=new THREE.ExtrudeGeometry(sh,{depth:t,bevelEnabled:false,curveSegments:6});g.rotateX(-Math.PI/2);return hadd(g,c,0,y,0);}
+rplate(1.995,.09,0,0xc9ced2);hadd(new THREE.BoxGeometry(1.6,.1,1.6),0xaab1b7,0,.14,0);rplate(1.9,.07,.19,0xc9ced2);
+[[1,1],[-1,1],[-1,-1],[1,-1]].forEach(([a,b])=>{hadd(new THREE.BoxGeometry(.07,.58,.07),0xc9ced2,a*.82,.55,b*.82);hadd(new THREE.CylinderGeometry(.05,.05,.04,12),0x5a6268,a*.82,.28,b*.82);});
+[-1,1].forEach(k=>{[.3,.82].forEach(y=>{hadd(new THREE.BoxGeometry(1.71,.05,.05),0xc9ced2,0,y,k*.82);hadd(new THREE.BoxGeometry(.05,.05,1.71),0xc9ced2,k*.82,y,0);});
+  hadd(new THREE.BoxGeometry(.05,.5,.05),0xc9ced2,k*.82,.55,.25);});
+hadd(new THREE.CylinderGeometry(.5,.55,.36,32),0x5a6268,0,.48,0);hadd(new THREE.CylinderGeometry(.39,.39,.08,40),0x8e979e,0,.7,0);
+hadd(new THREE.BoxGeometry(.04,.38,.62),0x1d2226,-.8,.56,-.25);hadd(new THREE.BoxGeometry(.3,.3,.3),0x5a6268,.55,.45,-.5);hadd(new THREE.CylinderGeometry(.1,.1,.32,16),0x2b2f33,.55,.45,.5);
+hadd(new THREE.BoxGeometry(.25,.18,.3),0x2b2f33,-.5,.38,.55);
+hadd(new THREE.BoxGeometry(1.72,.03,1.72),0xc9ced2,0,.865,0);
+hadd(new THREE.CylinderGeometry(.39,.39,.02,40),0xaab1b7,0,.89,0);hadd(new THREE.CylinderGeometry(.27,.27,.025,32),0x8e979e,0,.9,0);hadd(new THREE.CylinderGeometry(.225,.225,.012,28),0x24292d,0,.907,0);
+for(let k=0;k<8;k++){const a=k/8*Math.PI*2;hadd(new THREE.CylinderGeometry(.02,.02,.04,8),0x2a2d30,Math.cos(a)*.33,.905,Math.sin(a)*.33);}
+JX.forEach(([x,z])=>hadd(new THREE.CylinderGeometry(.16,.16,.18,20),0x1f4f7d,x,-.07,z));
+JG.forEach(([x,z])=>{hadd(new THREE.CylinderGeometry(.1,.1,3.66,20),0xdde2e6,x,-1.83,z,{m:.6,r:.3});hadd(new THREE.CylinderGeometry(.14,.14,.12,20),0x5a6268,x,-.06,z);});
+/* ---------- tubular string ---------- */
+const pipe=new THREE.Group();groups.PIPE.add(pipe);
+/* string stops above the window basket floor (lowest jack position), nothing runs through the BOP */
+{const m=new THREE.Mesh(new THREE.CylinderGeometry(.06,.06,7.9,14),M('PIPE',0x8f98a0,{m:.8,r:.3}));m.position.y=1.1-3.95;m.castShadow=true;m.userData.part='PIPE';pipe.add(m);
+ for(let k=0;k<1;k++){const c=new THREE.Mesh(new THREE.CylinderGeometry(.085,.085,.32,14),M('PIPE',0x6a737a,{m:.8,r:.3}));c.position.y=1.1-k*9.6-.2;c.userData.part='PIPE';pipe.add(c)}}
+/* ---------- 11 work basket +15500 ---------- */
+/* work basket floor per drawing S00012870 (drill floor layout): 6,316 x 4,400 mm; well centre 3,216 mm from the back end and 3,100 mm from the gin pole end;
+   central opening 2,215 x 2,220 mm round the jacking unit, gin pole recess 1,327 mm wide x 1,680 mm deep at the gin pole end, drill pipe guide recess 1,656 mm wide x 978 mm deep at the back end */
+const WZF=-3.1,WZB=3.216,WXW=2.2,WOX=1.11,WOF=-1.115,WOB=1.1,WGX=.664,WGZ=-1.42,WPX=.828,WPZ=2.238;
+[[-WXW,-WOX,WZF,WZB],[WOX,WXW,WZF,WZB],[-WOX,WOX,WOB,WPZ],[-WOX,-WPX,WPZ,WZB],[WPX,WOX,WPZ,WZB],[-WOX,-WGX,WZF,WOF],[WGX,WOX,WZF,WOF],[-WGX,WGX,WGZ,WOF]].forEach(([a,b,c,d])=>deck('11',a,b,c,d,15.5,null,{beam:.32,rails:false}));
+railing('11',[[-WGX,WZF],[-WXW,WZF],[-WXW,WZB],[-WPX,WZB],[-WPX,WPZ],[WPX,WPZ],[WPX,WZB],[1.2,WZB],[2.05,WZB],[WXW,WZB],[WXW,WZF],[WGX,WZF],[WGX,WGZ],[-WGX,WGZ],[-WGX,WZF]],15.5,[[-1.575,WZF,.42],[1.625,WZB,.3],[2.2,0,.3],[-2.2,2.782,.42],[0,WPZ,.6]]);
+railing('11',[[-WOX,WOF],[-WOX,WOB],[WOX,WOB],[WOX,WOF],[-WOX,WOF]],15.5);
+/* four round posts under the work basket that drop onto the cone pins of the jacking system brackets (3D view 77, WB module front views DR0000001930 / 1957):
+   under each module two posts, each with two braces in an inverted V up to the floor beams, one to the middle between the posts (meeting the brace from the other post) and one outward, stopping well short of the floor ends; no crossing braces, nothing out to the basket edge */
+{const PT=15.18,PB=14.5,PP=[[1.18,1.375],[-1.18,1.375],[-1.18,-1.375],[1.18,-1.375]];
+ PP.forEach(([x,z])=>{cy('11',0xc9ced2,.11,x,z,PB+.12,PT,{m:.3,r:.5},16);cy('11',0x8e979e,.15,x,z,PB,PB+.14,{},16);bx('11',0xc9ced2,x-.18,x+.18,PT-.04,PT,z-.18,z+.18);
+   bx('11',0xaab1b7,x-.08,x+.08,PB+.16,PB+.28,z-.12,z+.12);
+   mem('11',0xaab1b7,[x,PB+.22,z],[x,PT-.03,0],.05,{},8);mem('11',0xaab1b7,[x,PB+.22,z],[x,PT-.03,z+Math.sign(z)*.85],.05,{},8);});
+ [-1.18,1.18].forEach(x=>bx('11',0xaab1b7,x-.1,x+.1,PT-.06,PT-.02,-.15,.15));}
+/* floodlights around the work basket handrail (site photo, Vung Tau): pole clamped to a handrail post, long tube lamp on top leaning in over the basket, lit face turned to the work area */
+[[-2.2,WZF],[2.2,WZF],[2.2,WZB],[-2.2,WZB],[-2.2,-1.6],[-2.2,1.6],[2.2,-1.6],[2.2,1.6]].forEach(([x,z])=>{
+  const d=new THREE.Vector3(x,0,z).normalize(),top=new THREE.Vector3(x+d.x*.06,15.5+2.0,z+d.z*.06);
+  cy('11',0xdcdfe2,.035,top.x,top.z,15.5+.15,top.y,{},10);
+  bx('11',0x5a6268,x-.07,x+.07,15.5+.55,15.5+.68,z-.07,z+.07);bx('11',0x5a6268,x-.07,x+.07,15.5+1.0,15.5+1.12,z-.07,z+.07);
+  const dir=new THREE.Vector3(-d.x*.42,1,-d.z*.42).normalize(),q=new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0,1,0),dir);
+  const c={x:top.x+dir.x*.55,y:top.y+dir.y*.55,z:top.z+dir.z*.55};
+  const h=add('11',new THREE.BoxGeometry(.16,1.1,.1),M('11',0x5a6268),c.x,c.y,c.z);h.quaternion.copy(q);
+  const t=add('11',new THREE.BoxGeometry(.11,1.0,.04),lampMat('11'),c.x-d.x*.055,c.y,c.z-d.z*.055);t.quaternion.copy(q);
+  lampBeam('11',[c.x-d.x*.1,c.y,c.z-d.z*.1],[-d.x,-.75,-d.z],7);
+});
+/* one neon tube lamp on the handrail corner of the gin pole recess, lit face turned to the gin pole and its beam aimed up along it */
+{const id='11',x=.724,z=-1.36;cy(id,0xdcdfe2,.035,x,z,15.65,17.3,{},10);bx(id,0x5a6268,x-.07,x+.07,16.05,16.18,z-.07,z+.07);bx(id,0x5a6268,x-.07,x+.07,16.5,16.62,z-.07,z+.07);
+  const d=new THREE.Vector3(0-x,30-17.9,-1.5-z).normalize(),hl=Math.hypot(d.x,d.z),hx=d.x/hl,hz=d.z/hl,c={x,y:17.9,z};
+  const hm=add(id,new THREE.BoxGeometry(.16,1.1,.1),M(id,0x5a6268),c.x,c.y,c.z);hm.rotation.y=Math.atan2(hx,hz);
+  const g=add(id,new THREE.BoxGeometry(.11,1.0,.04),lampMat(id),c.x+hx*.055,c.y,c.z+hz*.055);g.rotation.y=Math.atan2(hx,hz);
+  lampBeam(id,[c.x+hx*.1,c.y+.3,c.z+hz*.1],[d.x,d.y,d.z],16).force=true;}
+/* the two control panels on the work basket (3D views 57, 58); face = side where the operator stands */
+function cpanel(id,x0,x1,z0,z1,h,nl,face){const C=0x7d868d,T=0x5f686f,Y=15.5+h,alz=face==='-z'||face==='+z';bx(id,C,x0,x1,15.5,Y,z0,z1);const d=add(id,new THREE.BoxGeometry(x1-x0+.04,.04,z1-z0+.04),M(id,T),(x0+x1)/2,Y+.03,(z0+z1)/2);if(face==='-z')d.rotation.x=-.3;if(face==='+z')d.rotation.x=.3;if(face==='-x')d.rotation.z=.3;if(face==='+x')d.rotation.z=-.3;const fx=face==='-x'?x0-.006:face==='+x'?x1+.006:0,fz=face==='-z'?z0-.006:face==='+z'?z1+.006:0;if(alz)bx(id,0x23292e,x0+.06,x1-.06,15.5+h*.35,15.5+h*.85,fz-.004,fz+.004);else bx(id,0x23292e,fx-.004,fx+.004,15.5+h*.35,15.5+h*.85,z0+.06,z1-.06);for(let k=0;k<nl;k++){const t=(k+.5)/nl,x=alz?x0+(x1-x0)*t:(x0+x1)/2,z=alz?(z0+z1)/2:z0+(z1-z0)*t;cy(id,0x2b2f33,.018,x,z,Y+.05,Y+.28,{},6);cy(id,k%2?0xd2452f:0x2b2f33,.035,x,z,Y+.28,Y+.34,{},8);}}
+/* 1. main hydraulic control panel: on the floor beside the gin pole, opposite the power tong; the operator stands behind it (front side) and looks across it at the hydraulic jack 0x7d868d */
+cpanel('11',-1.71,-.72,-2.1,-1.6,1.05,8,'-z');/* 0x7d868d */
+/* 2. crane and winch control panel: small, set against the triangle frame of the pipe guide so the operator has room to work 0x7d868d */
+cpanel('11',.9,1.1,2.7,3.15,1.0,3,'+x');/* 0x7d868d */
+/* pipe guide in the back recess (opposite the gin pole), per 3D views 52-54: recess 1,600 mm wide and 1,000 mm deep; two right-angle triangle frames of I-section steel on the two sides of the recess,
+   standing on the basket floor beside the recess: vertical leg 1,500 mm high at the inner edge, horizontal leg 1,000 mm along the floor; top pipe joins the triangle tops (guard), second pipe near the outer foot;
+   an I-beam ties the two vertical legs; two vertical stiffeners carry small welded plates, kept below the top pipe, forming a V slot that centres each tubular as it is pulled up */
+{const Y0=15.5,YT=17.0,ZI=2.26,ZO=3.19,XF=.86,GC=0xc9ced2;
+ function ib(x,a,b,h,w){const dy=b[0]-a[0],dz=b[1]-a[1],L=Math.hypot(dy,dz),th=Math.atan2(dz,dy),c=Math.cos(th),sn=Math.sin(th),my=(a[0]+b[0])/2,mz=(a[1]+b[1])/2;h=h||.2;w=w||.14;
+   const web=add('11',new THREE.BoxGeometry(.014,L,h-.03),M('11',GC),x,my,mz);web.rotation.x=th;
+   [-1,1].forEach(k=>{const o=k*(h/2-.008);const f=add('11',new THREE.BoxGeometry(w,L,.016),M('11',GC),x,my-sn*o,mz+c*o);f.rotation.x=th;});}
+ [-XF,XF].forEach(x=>{ib(x,[Y0,ZI],[YT+.05,ZI]);ib(x,[Y0+.1,ZI],[Y0+.1,ZO]);ib(x,[YT,ZI+.08],[Y0+.12,ZO]);
+   bx('11',0xa9b0b6,x-.12,x+.12,YT+.05,YT+.07,ZI-.12,ZI+.12);});
+ /* top pipe across the triangle tops and lower pipe near the outer foot, flanged at both ends */
+ [[YT,ZI],[Y0+.3,ZO-.22]].forEach(([y,z])=>{cyX('11',0xdfe3e6,.09,-XF+.08,XF-.08,y,z,{m:.4,r:.4},20);
+   [-1,1].forEach(k=>{cyX('11',0x8e979e,.15,k*(XF-.1)-.025,k*(XF-.1)+.025,y,z,{},20);cyX('11',0x2b2f33,.16,k*(XF-.13)-.01,k*(XF-.13)+.01,y,z,{},20);});});
+ /* I-beam tying the two vertical legs */
+ bx('11',GC,-XF+.08,XF-.08,15.95,15.97,ZI-.07,ZI+.07);bx('11',GC,-XF+.08,XF-.08,16.13,16.15,ZI-.07,ZI+.07);bx('11',GC,-XF+.08,XF-.08,15.97,16.13,ZI-.007,ZI+.007);
+ /* two vertical stiffeners from the floor to the top pipe, and the V slot plates just below the top pipe */
+ [-.16,.16].forEach(x=>{bx('11',GC,x-.05,x+.05,Y0,YT-.08,ZI-.05,ZI+.05);
+   const k=Math.sign(x),pl=add('11',new THREE.BoxGeometry(.02,.16,.3),M('11',0xa9b0b6),x+k*.09,YT-.2,ZI+.13);pl.rotation.y=k*.62;});}
+/* end basket infill */
+/* yellow steel gates in the work basket handrail: in the front face at the corner by the escape line post on the pipe guide side, behind the main hydraulic control panel, and at the vertical ladder exit */
+sgate('11',1.2,WZB,2.05,WZB,15.5);sgate('11',-1.95,WZF,-1.2,WZF,15.5);sgate('11',2.2,-.3,2.2,.3,15.5);
+/* two escape line posts at diagonally opposite corners of the work basket */
+[[-2.08,-3.0],[2.08,3.116]].forEach(([x,z])=>{bx('11',0xa9b0b6,x-.15,x+.15,15.5,15.53,z-.15,z+.15);cy('11',0xc9ced2,.075,x,z,15.53,18.4,{},14);
+  [17.9,18.2].forEach(y=>bx('11',0xa9b0b6,x-.03,x+.03,y-.09,y+.09,z-.16,z+.16));cy('11',0xa9b0b6,.1,x,z,18.4,18.46,{},14);});
+/* ---------- 12 gin pole ---------- */
+/* gin pole foot centre 2,300 mm from the well centre; its 1,200 mm square foot plate lies wholly on the jack basket floor, right above the two support tubes on the window basket */
+const GZ=-2.3, GX=0;
+/* the gin pole is set leaning slightly in towards the well (about 2 degrees, top towards the well centre), pivoting at its foot on the jack basket */
+/* gin pole heights per drawing S00012755: foot 1,359, fixed pole 8,620, 1st extension 7,325.5, 2nd extension 7,662, top plate to sheave centre 667 mm (25,645 mm foot to sheave centre); the pole is built from the earlier sections and then re-proportioned section by section */
+const GPK=[[10.65,10.65],[11.48,12.009],[22.6,20.629],[30.8,27.9545],[38.193,35.6165]];
+function GPR(y){if(y<=GPK[0][0])return y;for(let i=1;i<GPK.length;i++){const a=GPK[i-1][0],A=GPK[i-1][1],b=GPK[i][0],B=GPK[i][1];if(y<=b)return A+(y-a)*(B-A)/(b-a);}const L=GPK[GPK.length-1];return y+L[1]-L[0];}
+function gpRemap(g,n,lo,hi){if(!g)return;const kids=g.children.slice(0,n==null?g.children.length:n);
+  kids.forEach(m=>{if(!m.geometry)return;m.updateMatrix();m.geometry=m.geometry.clone();m.geometry.applyMatrix4(m.matrix);m.position.set(0,0,0);m.rotation.set(0,0,0);m.scale.set(1,1,1);
+    const p=m.geometry.attributes.position;for(let i=0;i<p.count;i++){const y=p.getY(i);let ny=GPR(y);if(lo!=null){const t=Math.min(1,Math.max(0,(y-lo)/(hi-lo)));ny=y+(ny-y)*t*t*(3-2*t);}p.setY(i,ny);}
+    p.needsUpdate=true;m.geometry.computeBoundingSphere();m.geometry.computeBoundingBox();});}
+const GP_TILT=2*Math.PI/180,GP_PIV=[0,10.65,GZ];
+function gpTilt(p){const c=Math.cos(GP_TILT),s=Math.sin(GP_TILT),y=p[1]-GP_PIV[1],z=p[2]-GP_PIV[2];return [p[0],GP_PIV[1]+y*c-z*s,GP_PIV[2]+y*s+z*c]}
+function gpTiltWrap(g,n){const t=new THREE.Group();const kids=g.children.slice(0,n==null?g.children.length:n);kids.forEach(k=>t.add(k));g.add(t);t.rotation.x=GP_TILT;const o=gpTilt([0,0,0]);t.position.set(o[0],o[1],o[2]);return t}
+
+bx('12',0xeceef0,-.6,.6,10.65,10.73,GZ-.6,GZ+.6);add('12',new THREE.CylinderGeometry(.36,.62,.75,28),M('12',0xeceef0),0,11.105,GZ);
+[0,1,2,3].forEach(k=>{const a=k*Math.PI/2+Math.PI/4;const g=add('12',new THREE.BoxGeometry(.05,.75,.42),M('12',0xeceef0),Math.cos(a)*.52,11.105,GZ+Math.sin(a)*.52);g.rotation.y=-a});
+cy('12',0xeceef0,.42,0,GZ,15.05,15.3,{},28);
+cy('12',0xeceef0,.33,GX,GZ,11.48,18.6,{m:.3,r:.45},32);cy('12',0xeceef0,.331,GX,GZ,18.6,22.6,{m:.3,r:.45},32);cy('12',0xdfe3e6,.39,GX,GZ,22.4,22.75,{},32);
+cy('12',0xeceef0,.27,GX,GZ,22.75,30.6,{m:.3,r:.45},32);cy('12',0xdfe3e6,.33,GX,GZ,30.45,30.8,{},32);
+cy('12',0xeceef0,.22,GX,GZ,30.8,33.0,{m:.3,r:.45},28);cy('12',0xeceef0,.221,GX,GZ,33.0,38.0,{m:.3,r:.45},28);cy('12',0x8e979e,.36,GX,GZ,38.0,38.193,{},28);
+/* gin pole head (3D views 62, 63): flange, V-shaped twin side plates carrying two large sheaves front and back, mast with antenna and obstruction light */
+cy('12',0x8e979e,.45,GX,GZ,38.193,38.25,{},28);
+{const sh=new THREE.Shape(),pts=[[-.25,0],[.25,0],[.94,.42],[1.02,.6],[.94,.8],[.725,.9],[.52,.8],[0,.38],[-.52,.8],[-.725,.9],[-.94,.8],[-1.02,.6],[-.94,.42]];
+ sh.moveTo(pts[0][0],pts[0][1]);pts.slice(1).forEach(p=>sh.lineTo(p[0],p[1]));sh.lineTo(pts[0][0],pts[0][1]);
+ [-.2,.17].forEach(x=>{const g=new THREE.ExtrudeGeometry(sh,{depth:.03,bevelEnabled:false});g.rotateY(Math.PI/2);add('12',g,M('12',0xc8cdd1),x,38.25,GZ);});
+ [-1,1].forEach(s=>{[-.21,.21].forEach(x=>mem('12',0xdfe3e6,[x,38.3,GZ+s*.25],[x,38.72,GZ+s*.85],.04,{},8));
+   cyX('12',0xd5d9dc,.29,-.13,.13,38.85,GZ+s*.725,{m:.3,r:.4},32);cyX('12',0x8e979e,.25,-.135,.135,38.85,GZ+s*.725,{},32);
+   [-1,1].forEach(k=>cyX('12',0xb9bfc4,.12,k*.2-.025,k*.2+.025,38.85,GZ+s*.725,{},20));
+   cyX('12',0xb9bfc4,.03,-.24,.24,39.18,GZ+s*.98,{},8);});
+ bx('12',0xc8cdd1,-.2,.2,38.25,38.32,GZ-.35,GZ+.35);
+ cy('12',0xb9bfc4,.035,.27,GZ-.1,38.3,40.5,{m:.6,r:.3},10);add('12',new THREE.CylinderGeometry(.22,.03,.1,16),M('12',0xdfe3e6),.27,40.55,GZ-.1);
+ add('12',new THREE.CylinderGeometry(.03,.08,.4,10),M('12',0xb9bfc4),0,38.85,GZ+.05);cy('12',0xd9a12a,.12,0,GZ+.05,39.05,39.1,{},16);cy('12',0x1b1f22,.1,0,GZ+.05,39.1,39.4,{},16);{const m=new THREE.MeshStandardMaterial({color:0xd8262e,roughness:.3,metalness:0});m.userData={lamp:true,red:true};if(mats['12'])mats['12'].push(m);OBSL=add('12',new THREE.CylinderGeometry(.08,.08,.08,16),m,0,39.44,GZ+.05);}}
+/* hoist line + block over pipe rack side (+z sheave toward well) */
+const _hs0=groups['12'].children.length;
+mem('12',0x2a2d30,[0,38.85,GZ+1.015],[0,24.5,GZ+1.015],.018,{},5);
+bx('12',0xd9a12a,-.15,.15,23.9,24.5,GZ+.87,GZ+1.16);cy('12',0x2a2d30,.03,0,GZ+1.015,23.5,23.9,{},6);
+const HOIST_STATIC=groups['12'].children.slice(_hs0);
+/* two guy lines (white-grey) on the winch side, from pad eyes just below the head flange to deadman anchors on the deck */
+/* per drawing S00012755: ladder (pos. 13) of U rungs up the fixed pole, and pole guides (pos. 7) with handles at the joints of the extendable sections */
+for(let y=12.3;y<=20.4;y+=.3){cyZ('12',0xdcdfe2,.016,GZ-.2,GZ+.2,y,GX-.52,{},6);[-.2,.2].forEach(d=>cyX('12',0xdcdfe2,.016,GX-.52,GX-.31,y,GZ+d,{},6));}
+[['12',22.58],['12',30.63]].forEach(([g,y])=>[-1,1].forEach(k=>{cyX(g,0xdcdfe2,.03,k>0?.38:-.62,k>0?.62:-.38,y,GZ,{},8);bx(g,0x5a6268,k>0?.6:-.66,k>0?.66:-.6,y-.12,y+.12,GZ-.03,GZ+.03);}));
+const crown=gpTilt([0,GPR(37.95),GZ]);const _gpCut=groups['12'].children.length;
+[[-8.5,-.55,-12],[8.5,-.55,-12]].forEach(a=>{mem('12',0x8a9095,crown,a,.016,{},5);bx('12',0x8e979e,a[0]-.4,a[0]+.4,-1,-.55,a[2]-.4,a[2]+.4);bx('12',0x2a2d30,a[0]-.12,a[0]+.12,-.55,-.4,a[2]-.12,a[2]+.12)});
+/* ---------- 13 ladder ---------- */
+const LX=-.42;
+/* ---------- 14 jib crane + winches ---------- */
+/* winch bracket and slewing jib on the gin pole (per 3D view 42): two clamp collars, paired gusset plates (no crossing braces), vertical frame column, short jib with sheave and hook; winch at the foot of the column */
+const JTH=35*Math.PI/180,JU=[Math.sin(JTH),Math.cos(JTH)],JV=[Math.cos(JTH),-Math.sin(JTH)];
+function JP(d,y,l){return[GX+JU[0]*d+JV[0]*(l||0),y,GZ+JU[1]*d+JV[1]*(l||0)]}
+function obox(id,c,d0,d1,y0,y1,l0,l1,o){const p=JP((d0+d1)/2,(y0+y1)/2,(l0+l1)/2);const g=add(id,new THREE.BoxGeometry(d1-d0,y1-y0,l1-l0),M(id,c,o),p[0],p[1],p[2]);g.rotation.y=-Math.atan2(JU[1],JU[0]);return g}
+function ocylL(id,c,r,d,y,l0,l1,o){const p=JP(d,y,(l0+l1)/2);const g=add(id,new THREE.CylinderGeometry(r,r,l1-l0,24),M(id,c,o),p[0],p[1],p[2]);g.rotation.order='YXZ';g.rotation.y=-Math.atan2(JU[1],JU[0]);g.rotation.x=Math.PI/2;return g}
+const JTIP=JP(2.2,0,0);
+let JIB14=[],HOOK14=[],CAB14=null,_jn=0;
+{const CD=.82,YB=18.35,YT=21.3;
+ [YB+.15,YT-.15].forEach(y=>cy('14',0xc8cdd1,.375,GX,GZ,y-.16,y+.16,{},28));
+ [-.13,.13].forEach(l=>{
+   const sh=new THREE.Shape();sh.moveTo(0,0);sh.lineTo(CD-.3,0);sh.lineTo(CD-.3,-.45);sh.lineTo(0,-.12);sh.lineTo(0,0);
+   [[YT+.02,1],[YB+.32,1]].forEach(([y])=>{const g=new THREE.ExtrudeGeometry(sh,{depth:.04,bevelEnabled:false});g.translate(.3,0,l-.02);g.rotateY(-Math.atan2(JU[1],JU[0]));add('14',g,M('14',0xd8262e),GX,y,GZ);});});
+ obox('14',0xc8cdd1,CD-.12,CD+.12,YB,YT+.1,-.12,.12);
+ obox('14',0xb9bfc4,CD-.2,CD+.2,YT+.1,YT+.16,-.2,.2);
+ {const p=JP(CD,0,0);cy('14',0x8e979e,.17,p[0],p[2],YT+.16,YT+.42,{},20);cy('14',0x1f5fc4,.09,p[0],p[2],YT+.42,YT+.62,{},16);}
+ _jn=groups['14']?groups['14'].children.length:0;
+ obox('14',0xc8cdd1,CD-.1,2.2,YT-.32,YT+.02,-.13,.13);
+ obox('14',0xc8cdd1,CD+.1,CD+.55,YT-.62,YT-.32,-.1,.1);
+ ocylL('14',0x2b6aa3,.15,2.2,YT-.17,-.08,.08);ocylL('14',0x2b6aa3,.1,CD+.2,YT-.15,-.08,.08);
+ JIB14=groups['14'].children.slice(_jn);
+ /* winch at the foot of the column */
+ obox('14',0xc8cdd1,CD+.1,CD+.6,YB-.05,YB+.6,-.32,-.27);obox('14',0xc8cdd1,CD+.1,CD+.6,YB-.05,YB+.6,.27,.32);
+ ocylL('14',0xdfe3e6,.2,CD+.38,YB+.3,-.27,.27,{m:.3,r:.4});ocylL('14',0xc8cdd1,.28,CD+.38,YB+.3,-.29,-.25);ocylL('14',0xc8cdd1,.28,CD+.38,YB+.3,.25,.29);
+ ocylL('14',0x1f5fc4,.13,CD+.38,YB+.3,.32,.6);
+ mem('14',0x2a2d30,JP(CD+.38,YB+.5,0),JP(CD+.2,YT-.3,0),.016,{},5);JIB14.push(mem('14',0x2a2d30,JP(CD+.2,YT-.02,0),JP(2.2,YT-.02,0),.016,{},5));
+ CAB14=mem('14',0x2a2d30,JP(2.32,YT-.17,0),JP(2.32,18.55,0),.016,{},5);
+ _jn=groups['14']?groups['14'].children.length:0;
+ const hp=JP(2.32,0,0);cy('14',0xd9a12a,.09,hp[0],hp[2],18.25,18.55,{},14);cy('14',0x2a2d30,.03,hp[0],hp[2],17.95,18.25,{},8);
+ HOOK14=groups['14'].children.slice(_jn);}
+/* winches on gin pole: two cable winches clamped to the back of the pole (side facing away from the well), at about the +14,090 side deck level; drums project outward, cables run straight up behind the pole (3D view 59) */
+{const WY=13.1,WZ=GZ-.82;
+ bx('14',0xd8262e,-.9,.9,WY-.62,WY+.62,GZ-.5,GZ-.36);[-.9,.9].forEach(x=>bx('14',0xd8262e,x-.03,x+.03,WY-.62,WY+.62,GZ-.36,GZ-.12));
+ [-1,1].forEach(s=>{const x0=s*.08,x1=s*.78;
+  bx('14',0xc8cdd1,Math.min(x0,x1),Math.max(x0,x1),WY-.5,WY+.48,GZ-.62,GZ-.5);
+  cyX('14',0xdfe3e6,.33,Math.min(x0,x1)+.06,Math.max(x0,x1)-.06,WY,WZ,{m:.3,r:.4},28);
+  cyX('14',0xc8cdd1,.43,Math.min(x0,x1),Math.min(x0,x1)+.06,WY,WZ,{},28);cyX('14',0xc8cdd1,.43,Math.max(x0,x1)-.06,Math.max(x0,x1),WY,WZ,{},28);
+  cyX('14',0x1f5fc4,.16,s>0?.78:-1.06,s>0?1.06:-.78,WY,WZ,{},18);
+  bx('14',0xc8cdd1,Math.min(x0,x1),Math.max(x0,x1),WY-.5,WY-.42,WZ-.4,GZ-.5);
+  /* cable leaves the drum tangentially at its back (outer) side and runs, slightly inclined, up to the back sheave on the pole head */
+  mem('14',0x16181a,[s*.43,WY+.05,WZ-.33],[s*.07,38.85,GZ-1.015],.02,{},5);});}
+/* ---------- 15 hydraulic power tong, hung from the gin pole jib winch (view 43) ---------- */
+let TONG15=[],JAW15=[],TONGH=null,_tn=0;const _t0=groups['15']?groups['15'].children.length:0;const TONG_UH=.4; /* the hanger sits 400 mm behind the throat, so the pipe never passes through the hanger or the jib */
+{const H=JP(2.32,0,0),OX=H[0]-TONG_UH,OZ=H[2],Y1=16.95,Y2=16.55;TONGH=[H[0],H[2],OX,OZ];
+ const W=(u,v)=>[OX+u,OZ-v];
+ function tongShape(){const s=new THREE.Shape();const yo=Math.sqrt(.17*.17-.13*.13);
+   s.moveTo(-.55,.13);s.lineTo(-yo,.13);s.absarc(0,0,.17,Math.atan2(.13,-yo),Math.atan2(-.13,-yo),true);s.lineTo(-.55,-.13);s.lineTo(-.55,-.3);
+   s.absarc(-.43,-.3,.12,Math.PI,1.5*Math.PI,false);s.lineTo(.55,-.42);s.absarc(.55,-.3,.12,1.5*Math.PI,2*Math.PI,false);s.lineTo(.67,.3);
+   s.absarc(.55,.3,.12,0,.5*Math.PI,false);s.lineTo(-.43,.42);s.absarc(-.43,.3,.12,.5*Math.PI,Math.PI,false);s.lineTo(-.55,.13);return s}
+ [[Y1,.26,0x5a2f66],[Y2,.18,0x5a2f66]].forEach(([y,d,c])=>{const g=new THREE.ExtrudeGeometry(tongShape(),{depth:d,bevelEnabled:false,curveSegments:24});g.rotateX(-Math.PI/2);add('15',g,M('15',c,{m:.3,r:.5}),OX,y,OZ);});
+ /* rotary gear ring and jaws around the throat */
+ const gr=add('15',new THREE.TorusGeometry(.23,.035,8,32),M('15',0x3a1f45),OX,Y1+.27,OZ);gr.rotation.x=Math.PI/2;
+ _tn=groups['15']?groups['15'].children.length:0;
+ [[.17,0],[0,.17],[0,-.17]].forEach(([u,v])=>{const p=W(u*1.0,v);bx('15',0x2b2f33,p[0]-.04,p[0]+.04,Y1+.02,Y1+.24,p[1]-.04,p[1]+.04);});
+ JAW15=groups['15'].children.slice(_tn);
+ /* legs and springs between tong and backup */
+ [[-.45,.33],[-.45,-.33],[.55,.33],[.55,-.33]].forEach(([u,v])=>{const p=W(u,v);cy('15',0x3a1f45,.035,p[0],p[1],Y2-.25,Y1,{},10);cy('15',0x8a4a9c,.055,p[0],p[1],Y2+.2,Y1-.02,{},10);});
+ /* hydraulic motor and gearbox at the back */
+ {const p=W(.45,.15);cy('15',0x3a1f45,.11,p[0],p[1],Y1+.26,Y1+.48,{},18);cy('15',0x5f686f,.08,p[0],p[1],Y1+.48,Y1+.72,{},16);}
+ /* valve bank, levers and gauge */
+ {const p=W(.2,-.2);bx('15',0x2b2f33,p[0]-.14,p[0]+.14,Y1+.26,Y1+.46,p[1]-.12,p[1]+.12);
+  [-.08,0,.08].forEach(k=>mem('15',0xc9a227,[p[0]+k,Y1+.46,p[1]],[p[0]+k,Y1+.66,p[1]-.06],.012,{},6));
+  const gg=add('15',new THREE.CylinderGeometry(.07,.07,.03,20),M('15',0xeceef0),p[0]+.05,Y1+.62,p[1]+.16);gg.rotation.x=Math.PI/2;}
+ /* hanger bail */
+ [-.36,.36].forEach(v=>{const p=W(TONG_UH,v);bx('15',0x5a2f66,p[0]-.035,p[0]+.035,Y1+.26,Y1+.95,p[1]-.035,p[1]+.035);});
+ {const a=W(TONG_UH,-.36),b=W(TONG_UH,.36);bx('15',0x5a2f66,a[0]-.04,a[0]+.04,Y1+.95,Y1+1.02,Math.min(a[1],b[1])-.04,Math.max(a[1],b[1])+.04);}
+ /* shackle, spring hanger and sling to the jib hook */
+ cy('15',0xd9a12a,.04,H[0],H[2],Y1+1.02,Y1+1.12,{},10);
+ cy('15',0x2a2d30,.025,H[0],H[2],Y1+1.12,Y1+1.25,{},8);
+ cy('15',0x8a4a9c,.1,H[0],H[2],Y1+1.25,Y1+1.75,{},18);
+ cy('15',0x2a2d30,.025,H[0],H[2],Y1+1.75,17.97,{},8);}
+TONG15=groups['15'].children.slice(_t0).filter(m=>JAW15.indexOf(m)<0);
+/* smaller hydraulic hose from the distribution centre up the outside of the tower to the power tong */
+const HOSEP=[[2.15,11.5,-1.95],[2.42,12.6,-1.55],[2.43,15.3,-1.5],[2.4,16.75,-1.2],[1.95,17.35,-0.55],[1.5,17.3,-0.25]];
+/* the last two hose segments (tower to power tong) are built after the slewing rig below, so they can follow the tong */
+for(let k=0;k<3;k++)mem('15',0x1b1b1b,HOSEP[k],HOSEP[k+1],.035,{r:.8},8);
+/* yellow steel gate closing the end of a stair landing (kept closed), in place of the end handrail (3D views 65, 66) */
+function sgate(id,ax,az,bx_,bz,y){const GC_=0xf2d21b;const alx=Math.abs(bz-az)<1e-6,x0=Math.min(ax,bx_),x1=Math.max(ax,bx_),z0=Math.min(az,bz),z1=Math.max(az,bz);
+  [[ax,az],[bx_,bz]].forEach(([x,z])=>cy(id,GC_,.03,x,z,y,y+1.12,{m:.3,r:.5},8));
+  if(alx){bx(id,GC_,x0+.04,x1-.04,y+1.06,y+1.1,az-.02,az+.02);bx(id,GC_,x0+.04,x1-.04,y+.1,y+.14,az-.02,az+.02);bx(id,GC_,x0+.07,x1-.07,y+.16,y+1.04,az-.008,az+.008);
+    [y+.3,y+.9].forEach(h=>bx(id,0x8e979e,x0+.02,x0+.07,h-.05,h+.05,az-.03,az+.03));}
+  else{bx(id,GC_,ax-.02,ax+.02,y+1.06,y+1.1,z0+.04,z1-.04);bx(id,GC_,ax-.02,ax+.02,y+.1,y+.14,z0+.04,z1-.04);bx(id,GC_,ax-.008,ax+.008,y+.16,y+1.04,z0+.07,z1-.07);
+    [y+.3,y+.9].forEach(h=>bx(id,0x8e979e,ax-.03,ax+.03,h-.05,h+.05,z0+.02,z0+.07));}}
+/* ---------- 16 loose lower stairs ---------- */
+flight('16','x',-3.06,-12.0,-8.55,-1,2.324,1.0);
+bx('16',0x7a838a,-12.3,-11.9,-1,-.95,-3.64,-2.49);
+/* intermediate adjustable landing +3,324 on four posts */
+deck('16',-8.55,-7.25,-3.71,-2.41,2.324,null,{beam:.2,rails:false});
+railing('16',[[-8.55,-3.71],[-7.25,-3.71]],2.324);railing('16',[[-8.55,-2.41],[-7.25,-2.41]],2.324);
+[[-8.45,-3.61],[-7.35,-3.61],[-7.35,-2.51],[-8.45,-2.51]].forEach(([x,z])=>{bx('16',0x8e979e,x-.07,x+.07,-1,2.06,z-.07,z+.07);bx('16',0x5d6873,x-.11,x+.11,.9,1.35,z-.11,z+.11);bx('16',0x5d6873,x-.22,x+.22,-1,-.96,z-.22,z+.22);});
+mem('16',0x8e979e,[-8.45,-.7,-3.61],[-7.35,1.9,-3.61],.035,{},6);mem('16',0x8e979e,[-8.45,-.7,-2.51],[-7.35,1.9,-2.51],.035,{},6);
+flight('16','x',-3.06,-7.25,-4.4,2.324,5.56,1.0);
+deck('16',-4.4,-2.4,-3.56,-1.45,5.56,null,{beam:.25,rails:false});
+railing('16',[[-4.4,-2.56],[-4.4,-1.45],[-4.13,-1.45]],5.56);railing('16',[[-3.31,-1.45],[-2.4,-1.45],[-2.4,-2.56]],5.56);railing('16',[[-4.4,-3.56],[-2.4,-3.56]],5.56);
+/* ---------- 17 upper stairs: straight on to the window basket, then two parallel flights up the side of the tower ---------- */
+const LA=-2.82, LB=-3.72;
+flight('17','z',LB,2.2,-1.45,1.874,5.56,.82);
+bx('17',GRATE,LB-.45,LB+.45,1.814,1.874,2.2,2.9,{r:.85,m:.2});railing('17',[[LB-.45,2.2],[LB-.45,2.9],[LB+.45,2.9],[LB+.45,2.2]],1.874);
+/* straight on from the tower landing to the far corner of the window basket +8,770 */
+flight('17','x',-3.06,-2.4,1.2,5.56,7.77,1.0);
+deck('17',1.2,2.2,-3.56,-2.51,7.77,null,{beam:.2,rails:false});
+railing('17',[[1.2,-3.56],[2.2,-3.56]],7.77);sgate('17',2.2,-3.56,2.2,-2.51,7.77);
+/* window basket +8,770 to jack basket +11,650: the lower landing sits right at the gin pole side corner of the window basket, flight tight against the deck edges, short landings */
+deck('17',-3.06,-2.2,-2.51,-1.51,7.77,null,{beam:.2,path:[[-3.06,-2.51],[-3.06,-1.51]]});sgate('17',-3.06,-2.51,-2.2,-2.51,7.77);
+flight('17','z',-2.63,-1.51,1.2,7.77,10.65,.82);
+deck('17',-3.06,-2.25,1.2,2.2,10.65,null,{beam:.2,path:[[-3.06,1.2],[-3.06,2.2]]});sgate('17',-3.06,2.2,-2.25,2.2,10.65);
+/* jack basket +11,650 to work basket +16,500: one straight flight, no mid landing, parallel to and in the same direction as the flight below, tight against the deck edges */
+deck('17',-3.06,-2.25,-3.2,-2.27,10.65,null,{beam:.2,path:[[-3.06,-3.2],[-3.06,-2.27]]});sgate('17',-3.06,-3.2,-2.25,-3.2,10.65);
+flight('17','z',-2.63,-2.27,2.348,10.65,15.5,.82);
+deck('17',-3.06,-2.2,2.348,3.216,15.5,null,{beam:.2,path:[[-3.06,2.348],[-3.06,3.216],[-2.2,3.216]]});
+/* emergency ladder H.4852: +11,650 jack basket to the work basket, base on a small platform (no handrail) */
+{const XD=2.28,zc=0,CX=2.68,R=.4,HW=.25,SG=1,ZL=zc+SG*Math.sqrt(R*R-HW*HW);
+  /* ladder on the side of the cage, its face at right angles to the deck edge: two round main tubes with round rungs welded between them; the round cage (about 800 mm) is open towards the jack basket, side deck and work basket so the crew walks straight in (3D views 60, 61) */
+  bx('EL',0x2f6b3c,2.22,3.2,10.59,10.65,-.5,.5,{r:.85,m:.2});[[2.22,3.2,-.5,-.44],[2.22,3.2,.44,.5],[3.14,3.2,-.5,.5]].forEach(([a,b,c,d])=>bx('EL',0xeceef0,a,b,10.45,10.59,c,d));
+  [CX-HW,CX+HW].forEach(x=>cy('EL',0xd8262e,.03,x,ZL,10.65,17.4,{},12));
+  for(let y=10.95;y<17.1;y+=.3)cyX('EL',0xe8862a,.02,CX-HW,CX+HW,y,ZL,{},8);
+  const a0=Math.atan2(ZL-zc,HW),a1=-SG*Math.PI*.78,P=a=>[CX+R*Math.cos(a),zc+R*Math.sin(a)];
+  const hoop=y=>{const N=10;for(let k=0;k<N;k++){const t0=a0+(a1-a0)*k/N,t1=a0+(a1-a0)*(k+1)/N,p0=P(t0),p1=P(t1);mem('EL',0xd8262e,[p0[0],y,p0[1]],[p1[0],y,p1[1]],.02,{},6);}
+    const e=P(a1);mem('EL',0xd8262e,[e[0],y,e[1]],[XD+.02,y,e[1]],.02,{},6);bx('EL',0xd8262e,XD,XD+.03,y-.04,y+.04,e[1]-.04,e[1]+.04);
+    mem('EL',0xd8262e,[CX-HW,y,ZL],[XD+.02,y,ZL],.02,{},6);bx('EL',0xd8262e,XD,XD+.03,y-.04,y+.04,ZL-.04,ZL+.04);};
+  for(let y=10.95;y<16.7;y+=.75){if(Math.abs(y-13.2)<.2)continue;hoop(y);}hoop(17.3);
+  [.2,-.35,-.9,-1.45,-2.0,a1].forEach(a=>{const p=P(a);bx('EL',0xd8262e,p[0]-.02,p[0]+.02,10.65,17.32,p[1]-.02,p[1]+.02);});}
+/* lean the gin pole, its jib, winches, cables and power tong in towards the well; the guy lines and their ground anchors stay put */
+gpRemap(groups['12'],_gpCut);gpRemap(groups['14']);gpRemap(groups['15'],null,17.6,21.0);
+gpTiltWrap(groups['12'],_gpCut);const T14=gpTiltWrap(groups['14']),T15=gpTiltWrap(groups['15']);
+/* slewing rig for the tubing make-up simulation: the jib arm, its hook block and the power tong turn about the winch column; the tong hangs from a trolley that runs in along the jib and is hoisted by the tong winch.
+   All pieces keep their parked positions until the simulation moves them. */
+const J14=new THREE.Group(),TR14=new THREE.Group(),HK14=new THREE.Group(),J15=new THREE.Group(),TR15=new THREE.Group(),TONGG=new THREE.Group(),JAWG=new THREE.Group();
+T14.add(J14);J14.position.set(GX,0,GZ);J14.add(TR14);TR14.add(HK14);
+T15.add(J15);J15.position.set(GX,0,GZ);J15.add(TR15);TR15.add(TONGG);TONGG.add(JAWG);
+JIB14.forEach(m=>{J14.add(m);m.position.set(-GX,0,-GZ)});
+TR14.add(CAB14);CAB14.position.set(-GX,0,-GZ);
+HOOK14.forEach(m=>{HK14.add(m);m.position.set(-GX,0,-GZ)});
+TONGG.position.set(TONGH[0]-GX,0,TONGH[1]-GZ);
+TONG15.forEach(m=>{TONGG.add(m);m.position.set(-TONGH[0],0,-TONGH[1])});
+JAWG.position.set(TONGH[2]-TONGH[0],0,TONGH[3]-TONGH[1]);
+JAW15.forEach(m=>{JAWG.add(m);m.position.set(-TONGH[2],0,-TONGH[3])});
+/* hose from the tower to the power tong: last two segments follow the tong */
+const HOSE_A=add('15',new THREE.CylinderGeometry(.035,.035,1,8),M('15',0x1b1b1b,{r:.8}),0,0,0),HOSE_B=add('15',new THREE.CylinderGeometry(.035,.035,1,8),M('15',0x1b1b1b,{r:.8}),0,0,0);
+T15.add(HOSE_A);T15.add(HOSE_B);
+function hoseSet(p5,d5){const a=HOSEP[3],b=[HOSEP[4][0]+d5[0]*.5,HOSEP[4][1]+d5[1]*.5+.25*Math.hypot(d5[0],d5[2]),HOSEP[4][2]+d5[2]*.5];
+  [[HOSE_A,a,b],[HOSE_B,b,p5]].forEach(([m,u,v])=>{const dx=v[0]-u[0],dy=v[1]-u[1],dz=v[2]-u[2],len=Math.hypot(dx,dy,dz)||1e-6;
+    m.position.set((u[0]+v[0])/2,(u[1]+v[1])/2,(u[2]+v[2])/2);
+    m.quaternion.copy(new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0,1,0),new THREE.Vector3(dx/len,dy/len,dz/len)));m.scale.set(1,len,1)})}
+/* poses of the jib: parked (tong lying along the jib), stand-off 700 mm from the pipe with the throat facing it, engaged (tong centre on the well axis).
+   The gin pole leans, so the target is taken back through the tilt. The tong keeps the throat facing -x on the last approach. */
+const JIB_R0=2.32,JIB_PHI0=Math.atan2(JU[0],JU[1]);
+const SW=(()=>{const c=Math.cos(GP_TILT),s=Math.sin(GP_TILT),yp=17.5-GP_PIV[1],zp=0-GP_PIV[2],zStar=GP_PIV[2]+(-yp*s+zp*c);
+  const cx=-GX,cz=zStar-GZ;                                     /* tong centre on the well axis, relative to the column */
+  const mk=off=>{const hx=cx+off+TONG_UH,R=Math.hypot(hx,cz),phi=Math.atan2(hx,cz);return {th:phi-JIB_PHI0,dR:R-JIB_R0,psi:-(phi-JIB_PHI0)}};
+  return {park:{th:0,dR:0,psi:100*Math.PI/180},stand:mk(.7),eng:mk(0),dy:.68}})();
+const HOSE_ATT=[TONGH[2]+.22-TONGH[0],TONGH[3]+.15-TONGH[1]];   /* hose connection on the tong body, relative to the hanger, in the tong's own frame */
+function jibPose(u){const A=SW.park,B=SW.stand,C=SW.eng,L=(a,b,k)=>a+(b-a)*k;
+  if(u<=1){const th=L(A.th,B.th,u),yaw=A.psi*(1-Math.min(1,u*1.4));return {th:th,dR:L(A.dR,B.dR,u),psi:yaw-th,dy:SW.dy*Math.min(1,u*2.2)}}
+  const k=u-1;return {th:L(B.th,C.th,k),dR:L(B.dR,C.dR,k),psi:L(B.psi,C.psi,k),dy:SW.dy}}
+function hosePoint(P){const yaw=P.th+P.psi,c=Math.cos(yaw),s=Math.sin(yaw),phi=JIB_PHI0+P.th,r=JIB_R0+P.dR;
+  return [GX+r*Math.sin(phi)+HOSE_ATT[0]*c+HOSE_ATT[1]*s,HOSEP[5][1]+P.dy,GZ+r*Math.cos(phi)-HOSE_ATT[0]*s+HOSE_ATT[1]*c]}
+const HOSE_P5_PARK=hosePoint(jibPose(0));
+function jibApply(u,spin){const P=jibPose(u);
+  J14.rotation.y=P.th;J15.rotation.y=P.th;TONGG.rotation.y=P.psi;JAWG.rotation.y=spin;
+  TR14.position.set(JU[0]*P.dR,0,JU[1]*P.dR);TR15.position.set(JU[0]*P.dR,0,JU[1]*P.dR);HK14.position.y=P.dy;TONGG.position.y=P.dy;
+  const p5=hosePoint(P);hoseSet(p5,[p5[0]-HOSE_P5_PARK[0],p5[1]-HOSE_P5_PARK[1],p5[2]-HOSE_P5_PARK[2]])}
+jibApply(0,0);
+/* ---------- 20 escape lines ---------- */
+/* each line starts from the top of an escape line post on the work basket, the posts at diagonally opposite corners */
+mem('20',0xd2452f,[-2.08,18.2,-3.0],[-6,-.85,-12],.02,{},5);bx('20',0xd2452f,-6.3,-5.7,-1,-.5,-12.3,-11.7);
+mem('20',0xd2452f,[2.08,18.2,3.116],[9,-.85,14.3],.02,{},5);bx('20',0xd2452f,8.7,9.3,-1,-.5,14.0,14.6);
+cy('20',0xd2452f,.11,-2.12,-3.15,18.05,18.35,{},12);cy('20',0xd2452f,.11,2.12,3.15,18.05,18.35,{},12);
+
+
+/* ---------- auxiliary equipment (layout estimated on 35 x 40 m platform) ---------- */
+function tube(id,col,pts,r){const c=new THREE.CatmullRomCurve3(pts.map(p=>new THREE.Vector3(...p)));const m=add(id,new THREE.TubeGeometry(c,Math.max(24,pts.length*14),r,8,false),M(id,col,{r:.8,m:.1}),0,0,0);return m}
+function container(id,col,rib,x0,x1,z0,z1,h,o){o=o||{};const y0=o.y0||0;
+  bx(id,col,x0,x1,y0+.02,y0+h,z0,z1,{m:.3,r:.6});
+  for(let x=x0+.28;x<x1-.2;x+=.3){bx(id,rib,x-.05,x+.05,y0+.15,y0+h-.12,z0-.03,z0);bx(id,rib,x-.05,x+.05,y0+.15,y0+h-.12,z1,z1+.03);}
+  [z0,z1].forEach(z=>{bx(id,rib,x0,x1,y0+h-.12,y0+h,z-.04,z+.04);bx(id,rib,x0,x1,y0,y0+.15,z-.04,z+.04)});
+  [[x0,z0],[x1,z0],[x1,z1],[x0,z1]].forEach(([x,z])=>{bx(id,0x2c3338,x-.09,x+.09,y0,y0+h,z-.09,z+.09);
+    [y0+.09,y0+h-.09].forEach(y=>bx(id,0x23282c,x-.11,x+.11,y-.1,y+.1,z-.11,z+.11))});
+  if(o.doors!==false){const xd=o.doorEnd==='x0'?x0:x1,s=xd===x1?1:-1;
+    bx(id,rib,xd-(s>0?0:.03),xd+(s>0?.03:0),y0+.15,y0+h-.15,z0+.1,z1-.1);
+    [.3,.42,.58,.7].forEach(f=>{const z=z0+(z1-z0)*f;mem(id,0x9aa3aa,[xd+s*.06,y0+.2,z],[xd+s*.06,y0+h-.2,z],.025,{m:.8,r:.3},8)});}
+}
+/* (site light masts are added after the platform deck) */
+function platformDeck(){const id='PLAT',X0=-13,X1=27,Z0=-20,Z1=15;
+  bx(id,0x8d969d,X0,X1,-.06,0,Z0,Z1,{m:.2,r:.9});
+  [[X0,X1,Z0,Z0+.12],[X0,X1,Z1-.12,Z1],[X0,X0+.12,Z0,Z1],[X1-.12,X1,Z0,Z1]].forEach(([a,b,c,d])=>bx(id,0xd9a12a,a,b,0,.02,c,d,{m:.2,r:.7}));
+  [[X0,Z0,X1,Z0],[X1,Z0,X1,Z1],[X1,Z1,X0,Z1],[X0,Z1,X0,Z0]].forEach(([a,b,c,d])=>{
+    mem(id,0xd9a12a,[a,1.1,b],[c,1.1,d],.03,{m:.3,r:.5},6);mem(id,0xd9a12a,[a,.55,b],[c,.55,d],.025,{m:.3,r:.5},6);
+    const L=Math.hypot(c-a,d-b),n=Math.round(L/2.5);for(let k=0;k<=n;k++){const t=k/n;cy(id,0xd9a12a,.035,a+(c-a)*t,b+(d-b)*t,0,1.1,{m:.3,r:.5},6)}});
+  /* painted zone lines */
+  [[-13,27,-13.2,-13.05],[-13,27,5.6,5.75]].forEach(([a,b,c,d])=>bx(id,0xe8e2c8,a,b,0,.012,c,d,{m:0,r:.9}));
+}
+platformDeck();
+/* ===== equipment sizes per the equipment list for layout (L x W x H, overall incl. skid); positions estimated ===== */
+/* skid-mounted enclosure: base skid, canopy with louvres, doors, roof, exhaust stack */
+function enclosure(id,x0,x1,z0,z1,h,col,dk,o){o=o||{};const sk=.22;
+  bx(id,0x23282c,x0,x1,0,sk,z0,z1);[z0+.05,z1-.05].forEach(z=>bx(id,0x1c2024,x0,x1,0,sk+.04,z-.05,z+.05));
+  [x0+.5,x1-.5].forEach(x=>bx(id,0x1c2024,x-.25,x+.25,.04,.18,z0-.01,z1+.01));
+  bx(id,col,x0+.05,x1-.05,sk,h-.12,z0+.05,z1-.05,{m:.35,r:.5});bx(id,dk,x0,x1,h-.12,h,z0,z1);
+  const n=Math.max(2,Math.round((x1-x0)/1.2));
+  for(let k=0;k<n;k++){const a=x0+.15+k*(x1-x0-.3)/n,b=a+(x1-x0-.3)/n-.12;
+    [z0+.04,z1-.04].forEach(z=>{bx(id,dk,a,b,sk+.15,h-.3,z-.012,z+.012);bx(id,0x9aa3aa,b-.12,b-.08,sk+1.0,sk+1.08,z-.03,z+.03);});}
+  if(o.louvre){const xa=o.louvre==='x0'?x0:x1,s=xa===x1?1:-1;bx(id,dk,xa-(s>0?.06:0),xa+(s>0?0:.06),sk+.3,h-.35,z0+.25,z1-.25);
+    for(let y=sk+.4;y<h-.4;y+=.14)bx(id,0x1b1f22,xa+s*.06-.015,xa+s*.06+.015,y,y+.05,z0+.3,z1-.3);}
+  (o.stacks||[]).forEach(([x,z])=>{cy(id,0x8e979e,.12,x,z,h,h+.7,{m:.7,r:.4},14);cy(id,0x5a636a,.16,x,z,h+.25,h+.5,{m:.6,r:.4},16);});
+  bx(id,0xd2452f,x0+.3,x0+.45,1.3,1.45,z1-.05,z1-.02);
+}
+/* fuel tank 3.2 x 1.85 x 1.4 */
+{const id='DT',x0=-12.2,x1=-9.0,z0=-18.6,z1=-16.75,h=1.4;
+  bx(id,0x46525c,x0,x1,0,.15,z0,z1);[x0+.6,x1-.6].forEach(x=>bx(id,0x23282c,x-.25,x+.25,.02,.13,z0-.01,z1+.01));
+  bx(id,0xdfe3e6,x0+.05,x1-.05,.15,h-.05,z0+.05,z1-.05,{m:.3,r:.6});bx(id,0xc3c9cd,x0+.05,x1-.05,h-.05,h,z0+.05,z1-.05);
+  cy(id,0x3a4248,.22,x0+.6,(z0+z1)/2,h,h+.08,{},18);cy(id,0x3a4248,.08,x1-.5,(z0+z1)/2,h,h+.2,{},10);
+  mem(id,0x3a4248,[x1-.3,h,z0+.3],[x1-.3,h+.4,z0+.3],.035,{},8);mem(id,0x3a4248,[x1-.3,h+.4,z0+.3],[x1-.05,h+.4,z0+.3],.035,{},8);
+  bx(id,0x9fd0e8,x1-.05,x1-.02,.3,1.2,z0+.6,z0+.68,{m:.1,r:.2});
+  for(let k=0;k<6;k++)cyZ(id,0x3a4248,.03,z1-.05,z1+.1,.35,x0+.3+k*.45,{},8);}
+/* HPU engine skid 5.65 x 2.55 x 3.2 */
+enclosure('HPU',-8.3,-2.65,-18.9,-16.35,3.2,0x3d6b4f,0x30573f,{louvre:'x0',stacks:[[-3.4,-17.2]]});
+/* HPU container 6.2 x 2.55 x 3.2: pumps and oil tank */
+{const id='HPU',x0=-2.0,x1=4.2,z0=-18.9,z1=-16.35;
+  bx(id,0x23282c,x0,x1,0,.12,z0,z1);
+  container(id,0x3d6b4f,0x30573f,x0,x1,z0,z1,3.08,{y0:.12,doorEnd:'x1'});
+  bx(id,0x1f2a24,x0+.4,x0+1.9,.7,2.4,z1+.03,z1+.06);for(let y=.8;y<2.4;y+=.12)bx(id,0x3a4a40,x0+.42,x0+1.88,y,y+.04,z1+.06,z1+.09);
+  bx(id,0xd9a12a,x1-2.2,x1-.8,1.0,1.9,z1+.03,z1+.05);
+  for(let k=0;k<5;k++)cyZ(id,0x23282c,.06,z1,z1+.25,.55,-.1+k*.25,{r:.8},10);
+  /* drive shaft cover from the HPU engine */
+  bx(id,0x30573f,-2.65,-2.0,1.0,1.6,-17.9,-17.35);}
+/* generator set 6.3 x 2.55 x 3.15 */
+enclosure('GEN',5.0,11.3,-18.9,-16.35,3.15,0x2f5d8a,0x264d74,{louvre:'x0',stacks:[[6.2,-17.3]]});
+bx('GEN',0xe4e6e8,9.6,10.6,1.2,1.9,-16.33,-16.3);
+/* MCC unit 6.5 x 2.55 x 3.2 */
+{const id='MCC',x0=12.1,x1=18.6,z0=-18.9,z1=-16.35;
+  bx(id,0x23282c,x0,x1,0,.12,z0,z1);
+  container(id,0xa8b0b7,0x8e979e,x0,x1,z0,z1,3.08,{y0:.12,doorEnd:'x0'});
+  bx(id,0x5a636a,x1+.03,x1+.6,1.3,2.3,z0+.6,z1-.6);cyX(id,0x23282c,.3,x1+.6,x1+.62,1.8,(z0+z1)/2,{},20);
+  bx(id,0xd2452f,x0+1.0,x0+1.3,1.7,1.9,z1+.03,z1+.06);bx(id,0xf0b429,x0+1.5,x0+1.8,1.7,1.9,z1+.03,z1+.06);}
+/* diesel air unit (air compressor) 6.1 x 2.5 x 3.3 */
+enclosure('AIR',5.0,11.1,-15.85,-13.35,3.3,0xc8502d,0xa8411f,{louvre:'x1',stacks:[[6.0,-14.6]]});
+{const id='AIR';cy(id,0xd9dde0,.3,11.75,-14.6,.15,1.7,{m:.5,r:.35},20);add(id,new THREE.SphereGeometry(.3,20,10),M(id,0xd9dde0,{m:.5,r:.35}),11.75,1.7,-14.6);
+  bx(id,0x3a4248,11.3,12.2,0,.15,-15.05,-14.15);mem(id,0x23282c,[11.1,1.0,-14.6],[11.5,1.0,-14.6],.05,{},8);}
+/* power and hydraulic interconnects: the 3 main hoses hang loose from the bottom of the hydraulic distribution centre on the jack basket, drop freely outside the stair landing to the deck and lie loose along the deck to the front of the HPU container, one continuous length each */
+tube('HPU',0x111111,[[1.7,11.8,-2.3],[1.7,11.15,-2.3],[1.72,10.75,-3.3],[1.74,9.6,-4.15],[1.78,6.0,-4.3],[1.85,2.2,-4.45],[1.95,0.45,-4.9],[2.05,0.1,-5.9],[2.0,0.1,-8.3],[1.4,0.1,-11.2],[0.85,0.1,-13.0],[0.3,0.1,-14.6],[0.3,0.1,-15.7],[0.3,0.35,-16.15],[0.3,1.0,-16.33]],0.07);
+tube('HPU',0x111111,[[1.5699999999999998,11.8,-2.3],[1.5699999999999998,11.15,-2.3],[1.5899999999999999,10.75,-3.3],[1.64,9.6,-4.15],[1.7,6.0,-4.34],[1.8000000000000003,2.2,-4.45],[1.8199999999999998,0.45,-4.9],[2.02,0.1,-5.9],[2.12,0.1,-8.3],[1.07,0.1,-11.2],[0.81,0.1,-13.0],[0.55,0.1,-14.6],[0.55,0.1,-15.7],[0.55,0.35,-16.15],[0.55,1.0,-16.33]],0.07);
+tube('HPU',0x111111,[[1.83,11.8,-2.3],[1.83,11.15,-2.3],[1.85,10.75,-3.3],[1.84,9.6,-4.15],[1.86,6.0,-4.26],[1.9,2.2,-4.45],[2.08,0.45,-4.9],[2.0799999999999996,0.1,-5.9],[1.88,0.1,-8.3],[1.7299999999999998,0.1,-11.2],[1.265,0.1,-13.0],[0.8,0.1,-14.6],[0.8,0.1,-15.7],[0.8,0.35,-16.15],[0.8,1.0,-16.33]],0.06);
+/* hydraulic distribution centre (3D view 67): caged skid in the corner of the +11,650 jack basket beside the gin pole foot; the main hoses from the HPU end here */
+{const id='HPU',x0=1.2,x1=2.15,z0=-2.7,z1=-1.85,y0=11.65,y1=12.75,C=0xdfe3e6;
+ bx(id,C,x0,x1,y0,y0+.1,z0,z1);[[x0,z0],[x1,z0],[x1,z1],[x0,z1]].forEach(([x,z])=>bx(id,C,x-.04,x+.04,y0,y1,z-.04,z+.04));
+ [y1-.05].forEach(y=>{bx(id,C,x0,x1,y-.04,y+.04,z0-.04,z0+.04);bx(id,C,x0,x1,y-.04,y+.04,z1-.04,z1+.04);bx(id,C,x0-.04,x0+.04,y-.04,y+.04,z0,z1);bx(id,C,x1-.04,x1+.04,y-.04,y+.04,z0,z1);});
+ bx(id,C,x0,x1,y0+.55,y0+.6,z0-.03,z0+.03);bx(id,C,x0,x1,y0+.55,y0+.6,z1-.03,z1+.03);
+ bx(id,0xb9bfc4,x0+.15,x1-.15,y0+.1,y0+.45,z0+.2,z1-.2);cyX(id,0x8e979e,.09,x0+.1,x1-.1,y0+.6,(z0+z1)/2,{m:.6,r:.3},16);
+ for(let k=0;k<5;k++){const x=x0+.2+k*.15;cy(id,0x8e979e,.04,x,(z0+z1)/2,y0+.65,y0+.85,{},8);cy(id,0x2b2f33,.05,x,(z0+z1)/2,y0+.85,y0+.9,{},8);}
+ [z0+.15,z1-.15].forEach(z=>{const g=add(id,new THREE.CylinderGeometry(.06,.06,.02,16),M(id,0xeceef0),x1+.01,y0+.85,z);g.rotation.z=Math.PI/2;});}
+/* smaller hoses from the distribution centre up to the main hydraulic control panel */
+tube('HPU',0x1b1b1b,[[1.54,12.75,-2.3],[1.89,13.6,-2.7],[1.99,15.3,-2.75],[1.99,16.0,-2.6],[1.3,16.05,-1.52],[-0.9,16.05,-1.52],[-0.96,16.05,-1.9]],.035);tube('HPU',0x1b1b1b,[[1.66,12.75,-2.3],[2.01,13.6,-2.7],[2.11,15.3,-2.75],[2.11,16.0,-2.6],[1.3,16.05,-1.4],[-0.9,16.05,-1.4],[-0.84,16.05,-1.9]],.035);
+/* hose connection block under the work basket floor, below the main hydraulic control panel */
+bx('HPU',0x2b2f33,-1.7,-.75,15.98,16.18,-2.08,-1.6);
+tube('GEN',0x1b1b1b,[[11.3,.6,-17.0],[11.7,.1,-16.1],[12.6,.1,-16.1],[13.0,.6,-16.36]],.06);
+tube('MCC',0x1b1b1b,[[17.6,.1,-16.3],[17.8,.1,-13.0],[26.0,.1,-12.0],[26.2,.1,7.5],[25.5,.1,7.95],[25.0,.6,8.1]],.05);
+/* accumulator */
+{const id='ACC',x0=-9.2,x1=-5.6,z0=6.2,z1=7.8;
+  bx(id,0x5a636a,x0,x1,0,.15,z0,z1);
+  bx(id,0xdfe3e6,x0+.1,x1-.1,.15,1.0,z0+.15,z1-.15,{m:.3,r:.5});
+  for(let r=0;r<2;r++)for(let k=0;k<12;k++){const x=x0+.25+k*.28,z=z0+.35+r*.9;
+    cy(id,0xe4e6e8,.12,x,z,1.0,2.05,{m:.5,r:.35},14);add(id,new THREE.SphereGeometry(.12,12,8),M(id,0xe4e6e8,{m:.5,r:.35}),x,2.05,z);}
+  [[x0+.1,z0+.15],[x1-.1,z0+.15],[x1-.1,z1-.15],[x0+.1,z1-.15]].forEach(([x,z])=>bx(id,0xc3c9cd,x-.04,x+.04,1.0,2.3,z-.04,z+.04));
+  bx(id,0xc3c9cd,x0+.05,x1-.05,2.25,2.32,z0+.1,z1-.1);
+  bx(id,0x2c3338,x1-.05,x1+.12,.4,1.6,z0+.3,z1-.3);for(let k=0;k<9;k++)cyX(id,0xd9a12a,.03,x1+.12,x1+.32,.7+(k%3)*.3,z0+.45+Math.floor(k/3)*.35,{},6);
+  tube(id,0x2b2b2b,[[x1+.1,.5,7.0],[-3.0,.12,5.2],[-1.6,.12,3.4],[-1.0,2.35,2.6],[-1.0,3.24,.55]],.06);
+  tube(id,0x2b2b2b,[[x1+.1,.6,7.2],[-2.8,.12,5.4],[-1.4,.12,3.6],[-.8,2.4,2.8],[-.9,4.55,.6]],.06);}
+/* site light masts round the platform edge, two floodlights each: one on the HWU tower, one on the deck */
+[[-12.4,-19.4],[7,-19.4],[26.4,-19.4],[26.4,14.4],[7,14.4],[-12.4,14.4]].forEach(([x,z])=>{bx('PLAT',0x5a6268,x-.4,x+.4,0,.08,z-.4,z+.4);cy('PLAT',0xdcdfe2,.09,x,z,.08,9.2,{},12);cy('PLAT',0xdcdfe2,.13,x,z,.08,1.2,{},12);
+  bx('PLAT',0x5a6268,x-.5,x+.5,9.0,9.08,z-.08,z+.08);
+  lampHead('PLAT',[x-.3,9.35,z],[0-x,8-9.35,0-z]);lampHead('PLAT',[x+.3,9.35,z],[7-x,0-9.35,-2.5-z]);});
+/* mud tanks (L x W x H incl. skid): active 7.0 x 2.5 x 5.15 with the shale shaker on top, reserve 6.0 x 2.5 x 3.15, trip 5.5 x 2.5 x 3.15, mixing tank 4.8 x 2.5 x 3.15 */
+function tank(id,x0,x1,z0,z1,h,o){o=o||{};
+  bx(id,0x5a636a,x0,x1,0,.2,z0,z1);
+  bx(id,0x7f8a92,x0,x1,.2,h,z0,z1,{m:.35,r:.55});
+  for(let x=x0+.5;x<x1-.3;x+=1.0){bx(id,0x6a747c,x-.05,x+.05,.25,h-.05,z0-.04,z0);bx(id,0x6a747c,x-.05,x+.05,.25,h-.05,z1,z1+.04)}
+  bx(id,GRATE,x0,x1,h,h+.05,z0,z1,{r:.85,m:.2});
+  railing(id,[[x0,z0],[x1,z0],[x1,z1],[x0,z1],[x0,z0]],h+.05,[[x0,(z0+z1)/2,.45]]);
+  (o.agit||[]).forEach(x=>{const z=(z0+z1)/2;bx(id,0x2b6aa3,x-.3,x+.3,h+.05,h+.45,z-.3,z+.3);cy(id,0x2b6aa3,.2,x,z,h+.45,h+.95,{},16);cy(id,0x23282c,.22,x,z,h+.95,h+1.0,{},16)});
+  for(let y=.3;y<h;y+=.3)mem(id,RAIL,[x0-.25,y,(z0+z1)/2-.22],[x0-.25,y,(z0+z1)/2+.22],.015,{},6);
+  [-.22,.22].forEach(d=>bx(id,RAIL,x0-.28,x0-.22,0,h+1.0,(z0+z1)/2+d-.03,(z0+z1)/2+d+.03));
+}
+const TZ0=8.1,TZ1=10.6;
+/* the tanks, engines and pumps are built first in their original row, then the whole set is moved right, away from the pipe rack */
+const MUDN={MT:groups.MT.children.length,MP:groups.MP.children.length,DE:groups.DE.children.length},MUDDX=4.1;
+/* active tank: tank body 3.15 high, shale shaker skid on top to +5.15 */
+tank('MT',2.6,9.6,TZ0,TZ1,3.15,{agit:[7.7,9.0]});
+{const id='MT',sx0=3.0,sx1=5.6,y0=3.2,zc=(TZ0+TZ1)/2;
+  bx(id,0x3a4248,sx0,sx1,y0,y0+.25,TZ0+.3,TZ1-.3);
+  [TZ0+.35,TZ1-.35].forEach(z=>{bx(id,0x2b6aa3,sx0+.1,sx1-.1,y0+.25,y0+1.3,z-.06,z+.06);cyZ(id,0x2b6aa3,.2,z-.15,z+.15,y0+1.25,(sx0+sx1)/2,{},16);});
+  const sc=add(id,new THREE.BoxGeometry(sx1-sx0-.3,.08,TZ1-TZ0-.9),M(id,0x9fa7ad,{m:.7,r:.3}),(sx0+sx1)/2,y0+.9,zc);sc.rotation.z=.08;
+  bx(id,0x5a636a,sx0-.05,sx0+.5,y0+.25,5.15,TZ0+.5,TZ1-.5);bx(id,0x3a4248,sx0+.6,sx1-.1,y0+1.75,y0+1.95,TZ0+.4,TZ1-.4);}
+/* gas buster (venting gas separator) standing on the active tank beside the shaker, gas vent up and mud outlet into the shaker header */
+{const id='MT',x=6.4,z=9.35;cy(id,0x6a747c,.42,x,z,3.2,5.9,{m:.4,r:.5},24);add(id,new THREE.SphereGeometry(.42,20,10,0,Math.PI*2,0,Math.PI/2),M(id,0x6a747c),x,5.9,z);
+  cy(id,0x6a747c,.08,x,z,6.2,8.4,{},10);[0,1,2].forEach(k=>{const a=k/3*Math.PI*2+.5;mem(id,0x5a636a,[x+Math.cos(a)*.4,5.0,z+Math.sin(a)*.4],[x+Math.cos(a)*.75,3.2,z+Math.sin(a)*.6],.04,{},6)});
+  mem(id,0x6a747c,[x-.4,4.4,z],[5.4,4.4,z-.3],.08,{},10);}
+bx('MT',0x9fd0e8,9.6,9.63,.5,2.9,9.0,9.1,{m:.1,r:.2});
+tank('MT',10.2,16.2,TZ0,TZ1,3.15,{agit:[12.2,14.2]});
+tank('MT',16.8,22.3,TZ0,TZ1,3.15,{agit:[19.55]});
+/* floodlights along the mud tank top handrails, aimed down over the tank tops */
+[[4.6,TZ0,3.2,1],[8.6,TZ1,3.2,-1],[11.6,TZ0,3.2,1],[14.8,TZ1,3.2,-1],[19.55,TZ0,3.2,1]].forEach(([x,z,h,s])=>lampPole('MT',x,h+1.15,z,1.4,[[x,0,z+s*4]]));
+/* diesel engines 5.5 x 2.5 x 3.3 driving the mud pumps 3.5 x 2.5 x 2.5 through a drive shaft */
+const MZ0=11.4,MZ1=13.9,MZC=(MZ0+MZ1)/2;
+function mudPump(x0){const id='MP',x1=x0+3.5,z0=MZ0,z1=MZ1,zc=MZC;
+  bx(id,0x3a4248,x0,x1,0,.25,z0,z1);[z0+.06,z1-.06].forEach(z=>bx(id,0x2c3338,x0,x1,0,.32,z-.06,z+.06));
+  bx(id,0x4a5fa8,x0+.15,x0+2.0,.25,1.85,zc-.85,zc+.85,{m:.4,r:.5});bx(id,0x3a4c87,x0+.15,x0+2.0,1.85,1.95,zc-.9,zc+.9);
+  cyZ(id,0x3a4c87,.55,zc-.95,zc+.95,1.05,x0+.9,{},28);
+  bx(id,0xd9a12a,x0+2.0,x0+2.3,.45,1.55,zc-.8,zc+.8);
+  [-.6,0,.6].forEach(d=>{cyX(id,0x9aa3aa,.15,x0+2.3,x0+2.85,.95,zc+d,{m:.6,r:.35},16);bx(id,0x6a747c,x0+2.85,x0+3.3,.5,1.45,zc+d-.25,zc+d+.25);});
+  cyZ(id,0x6a747c,.16,z0+.05,z1-.05,.42,x0+3.05,{},16);cyZ(id,0x6a747c,.12,z0+.15,z1-.15,1.6,x0+3.05,{},14);
+  cy(id,0x6a747c,.08,x0+3.05,zc,1.6,1.95,{},10);add(id,new THREE.SphereGeometry(.3,20,12),M(id,0x2b6aa3,{m:.4,r:.4}),x0+3.05,2.2,zc);
+  cyX(id,0x2e373e,.09,x0-.4,x0+.15,1.05,zc,{m:.6,r:.4},14);}
+function diesel(id,x0){enclosure(id,x0,x0+5.5,MZ0,MZ1,3.3,0x6b7a3a,0x58652f,{louvre:'x0',stacks:[[x0+1.3,MZC-.6]]});}
+diesel('DE',2.6);mudPump(8.5);diesel('DE',13.0);mudPump(18.9);
+['MT','MP','DE'].forEach(id=>groups[id].children.slice(MUDN[id]).forEach(o=>o.position.x+=MUDDX));
+/* mixing tank, mixing skid and poor boy on the east side of the platform, beside the HWU, leaving the pipe rack area clear */
+tank('MT',16.0,20.8,.6,3.1,3.15,{agit:[18.4]});
+lampPole('MT',18.4,4.3,3.1,1.4,[[18.4,0,-.9]]);
+/* mixing skid 4.0 x 2.5 x 2.85: two centrifugal mixing pumps, hopper on a stand */
+{const id='MT',x0=21.4,x1=25.4,z0=.6,z1=3.1,zc=(z0+z1)/2;
+  bx(id,0x3a4248,x0,x1,0,.2,z0,z1);[z0+.05,z1-.05].forEach(z=>bx(id,0x2c3338,x0,x1,0,.28,z-.05,z+.05));
+  [z0+.7,z1-.7].forEach(z=>{cyX(id,0x5a8a8f,.24,x0+.3,x0+1.3,.5,z,{},20);cyX(id,0x4a777b,.3,x0+1.4,x0+1.7,.5,z,{},24);cy(id,0x4a777b,.1,x0+1.55,z,.8,1.1,{},10);
+    mem(id,0x34393e,[x0+1.55,1.1,z],[x0+2.6,1.1,z],.08,{},10);});
+  [[x0+2.3,z0+.3],[x1-.2,z0+.3],[x1-.2,z1-.3],[x0+2.3,z1-.3]].forEach(([x,z])=>bx(id,0x6a747c,x-.05,x+.05,.2,1.9,z-.05,z+.05));
+  bx(id,GRATE,x0+2.2,x1-.1,1.9,1.95,z0+.2,z1-.2,{r:.85,m:.2});
+  add(id,new THREE.CylinderGeometry(.55,.15,.75,16),M(id,0x5a636a),x0+3.0,2.4,zc);cy(id,0x5a636a,.08,x0+3.0,zc,1.95,2.05,{},10);
+  bx(id,0x5a636a,x1-.9,x1-.2,1.95,2.85,zc-.6,zc+.6);
+  railing(id,[[x0+2.2,z0+.2],[x1-.1,z0+.2],[x1-.1,z1-.2],[x0+2.2,z1-.2]],1.95);}
+/* mud gas separator (poor boy) skid 8.6 x 2.45 x 2.59: separator vessel on saddles, vent line */
+{const id='MGS',x0=16.0,x1=24.6,z0=4.5,z1=6.95,zc=(z0+z1)/2;
+  bx(id,0x3a4248,x0,x1,0,.22,z0,z1);[z0+.06,z1-.06].forEach(z=>bx(id,0x2c3338,x0,x1,0,.3,z-.06,z+.06));
+  [x0+1.4,x1-1.4].forEach(x=>bx(id,0x5a636a,x-.2,x+.2,.22,1.1,zc-.85,zc+.85));
+  const v=add(id,new THREE.CylinderGeometry(1.05,1.05,6.4,28),M(id,0x7f8a92,{m:.4,r:.5}),(x0+x1)/2,1.48,zc);v.rotation.z=Math.PI/2;
+  [-1,1].forEach(sg=>{const e=add(id,new THREE.SphereGeometry(1.05,24,12,0,Math.PI*2,0,Math.PI/2),M(id,0x7f8a92,{m:.4,r:.5}),(x0+x1)/2+sg*3.2,1.48,zc);e.rotation.z=-sg*Math.PI/2;e.scale.set(1,.35,1);});
+  cyX(id,0x6a747c,.12,x0+.15,x0+1.0,1.48,zc,{},14);cy(id,0x6a747c,.15,x1-2.0,zc,2.4,2.59,{},14);cy(id,0x6a747c,.1,x0+2.2,zc,2.4,2.59,{},12);
+  mem(id,0x6a747c,[x1-.3,1.0,zc],[x1+.1,1.0,zc],.1,{},10);
+  bx(id,0x23282c,x0+.4,x0+.9,.22,1.2,z1-.35,z1-.1);}
+/* mud manifold + HP discharge from both pumps, routed between the active and reserve tanks, then past the end of the capping beam */
+{const id='MP';bx(id,0x3a4248,8.5,9.7,0,.12,3.0,3.8);[[8.65,3.15],[9.55,3.15],[8.65,3.65],[9.55,3.65]].forEach(([x,z])=>bx(id,0x3a4248,x-.04,x+.04,.12,1.6,z-.04,z+.04));
+  cyX(id,0x34393e,.07,8.5,9.7,.7,3.4,{},12);cyX(id,0x34393e,.07,8.5,9.7,1.3,3.4,{},12);
+  [8.8,9.4].forEach(x=>{cy(id,0x34393e,.07,x,3.4,.7,1.3,{},10);bx(id,0x23282c,x-.12,x+.12,.9,1.1,3.28,3.52);
+    add(id,new THREE.TorusGeometry(.12,.018,6,16),M(id,0xd9a12a),x,1.0,3.64);});
+  tube(id,0x34393e,[[15.65,1.6,11.6],[16.0,.15,11.2],[14.6,.15,11.05],[14.0,.15,10.9],[14.0,.15,7.95],[9.7,.15,7.95],[9.5,.15,4.6],[9.3,.7,3.8]],.06);
+  tube(id,0x34393e,[[26.05,1.6,11.6],[26.3,.15,11.2],[25.6,.15,10.95],[14.3,.15,10.95],[14.1,.15,10.75]],.06);
+}
+/* pipe rack opposite the gin pole, pipes pointing at the back recess of the work basket */
+{const id='PR',x0=-1.6,x1=1.6;
+  [5.6,8.4,11.2,14.0].forEach(z=>{bx(id,0x6b5b3e,x0,x1,0,.12,z-.15,z+.15);[x0+.1,x1-.1].forEach(x=>bx(id,0x6b5b3e,x-.08,x+.08,.12,1.25,z-.08,z+.08));
+    bx(id,0x6b5b3e,x0,x1,.75,.87,z-.12,z+.12);[x0+.1,x1-.1].forEach(x=>mem(id,0x6b5b3e,[x,.15,z],[x+(x<0?.5:-.5),.75,z],.035,{},6));});
+  const pipeM=M(id,0x8f98a0,{m:.7,r:.35}),boxM=M(id,0x2b6aa3,{m:.4,r:.5});
+  for(let l=0;l<5;l++)for(let k=0;k<12;k++){const x=x0+.3+k*.21+(l%2)*.1,y=.95+l*.15;if(x>x1-.2)continue;
+    const m=add(id,new THREE.CylinderGeometry(.07,.07,9.6,10),pipeM,x,y,9.8);m.rotation.x=Math.PI/2;
+    const b=add(id,new THREE.CylinderGeometry(.085,.085,.3,10),boxM,x,y,14.75);b.rotation.x=Math.PI/2;}}
+/* ---------- labels: elevations and dimensions ---------- */
+function textSprite(txt,opt){opt=opt||{};const fs=44,pad=14,c=document.createElement('canvas'),x=c.getContext('2d');
+  x.font='500 '+fs+'px "JetBrains Mono", monospace';const w=Math.ceil(x.measureText(txt).width)+pad*2,h=fs+pad*1.3;
+  c.width=w;c.height=h;x.font='500 '+fs+'px "JetBrains Mono", monospace';
+  x.fillStyle=opt.bg||'rgba(255,255,255,.92)';x.fillRect(0,0,w,h);x.fillStyle=opt.bar||'#d99a0b';x.fillRect(0,0,6,h);
+  x.fillStyle=opt.fg||'#1b2228';x.textBaseline='middle';x.fillText(txt,pad,h/2+2);
+  const tex=new THREE.CanvasTexture(c);tex.minFilter=THREE.LinearFilter;tex.anisotropy=4;
+  const s=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,depthTest:false,transparent:true}));
+  const k=(opt.size||.55)/h;s.scale.set(w*k,h*k,1);s.renderOrder=10;return s}
+/* capping beams 1,000 mm high: all HWU parts sit in one group raised by 1 m */
+const HWUROOT=new THREE.Group();HWUROOT.position.y=1;scene.add(HWUROOT);
+['01','02','03','04','BOP','PM','06','05','07','09','08','10','PIPE','11','12','14','15','16','17','EL','20'].forEach(id=>{if(groups[id])HWUROOT.add(groups[id])});
+const elevG=new THREE.Group(),dimG=new THREE.Group();scene.add(elevG);scene.add(dimG);
+const lineM=new THREE.LineBasicMaterial({color:0xd99a0b,depthTest:false,transparent:true});
+const dimM=new THREE.LineBasicMaterial({color:0x1f6fb2,depthTest:false,transparent:true});
+function line(g,pts,m){const l=new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts.map(p=>new THREE.Vector3(...p))),m);l.renderOrder=9;g.add(l);return l}
+const ELEV=[[0,'±0.00 platform deck'],[1,'+1,000 top of capping beam'],[2.874,'+2,874 top of skid'],[3.734,'+3,734'],[8.77,'+8,770 window basket'],[11.65,'+11,650 jack basket'],[14.15,'+14,150 side deck'],[16.5,'+16,500 work basket'],[36.617,'+36,617 top of gin pole']];
+const elevLabels=[];
+ELEV.forEach(([y,t])=>{const zEnd=y>30?GZ+.6:3.4;line(elevG,[[0,y,zEnd],[0,y,5.2],[0,y,5.2]],lineM);
+  line(elevG,[[-.15,y,5.2],[.15,y,5.2]],lineM);
+  const s=textSprite(t);s.position.set(0,y+.32,5.3);s.center.set(0,.5);elevG.add(s);elevLabels.push({s,y})});
+function dim(a,b,off,txt,lab){line(dimG,[a,b],dimM);
+  const d=new THREE.Vector3(...b).sub(new THREE.Vector3(...a)).normalize();
+  [a,b].forEach(p=>{line(dimG,[[p[0]-off[0],p[1]-off[1],p[2]-off[2]],[p[0]+off[0]*.3,p[1]+off[1]*.3,p[2]+off[2]*.3]],dimM)});
+  const s=textSprite(txt,{bar:'#1f6fb2',size:.6});s.position.set(...lab);dimG.add(s)}
+dim([SX0,1.05,5.2],[SX1,1.05,5.2],[0,0,.9],'16,225',[(SX0+SX1)/2,1.6,5.2]);
+dim([-2.1,1.05,4.3],[13.14,1.05,4.3],[0,0,.6],'15,240 (50 ft)',[5.5,1.6,4.3]);
+dim([-2.1,1.05,3.6],[0,1.05,3.6],[0,0,.4],'2,100',[-1.05,1.6,3.6]);
+dim([14.6,1.05,-1.75],[14.6,1.05,1.75],[.6,0,0],'3,500',[15.3,1.6,0]);
+dim([10.5,0,-4.2],[10.5,36.617,-4.2],[0,0,.0],'36,617',[10.5,18.5,-4.2]);
+line(dimG,[[10.2,36.617,-4.2],[0,36.617,GZ]],dimM);line(dimG,[[10.2,0,-4.2],[10.8,0,-4.2]],dimM);
+const strokeDim=new THREE.Group();HWUROOT.add(strokeDim);
+const tagG=new THREE.Group();scene.add(tagG);
+[['HPU','HPU engine',[-5.5,4.4,-17.6]],['HPU','HPU container',[1.1,4.4,-17.6]],['GEN','Gen set',[8.2,4.3,-17.6]],['MCC','MCC unit',[15.4,4.4,-17.6]],['DT','Fuel tank',[-10.6,2.6,-17.7]],['AIR','Diesel air unit',[8.0,4.5,-14.6]],
+ ['ACC','Accumulator',[-7.4,3.2,7.0]],['MT','Active tank + shaker',[8.4,6.0,9.35]],['MT','Gas buster',[10.5,9.0,9.35]],['MT','Reserve tank',[17.3,4.9,9.35]],['MT','Trip tank',[23.65,4.9,9.35]],['MT','Mixing tank',[18.4,4.9,1.85]],['MT','Mixing skid',[23.4,3.7,1.85]],
+ ['MGS','Mud gas separator',[20.3,3.6,5.7]],['DE','Diesel engine 1',[9.45,4.4,12.65]],['MP','Mud pump 1',[14.35,3.4,12.65]],['DE','Diesel engine 2',[19.85,4.4,12.65]],['MP','Mud pump 2',[24.75,3.4,12.65]],['MP','Mud manifold',[9.1,2.3,3.4]],['PR','Pipe rack',[0,2.6,9.8]]].forEach(([id,t,pos])=>{
+  const sp=textSprite(t,{bar:'#3d7a3a',size:.5});sp.position.set(...pos);sp.userData.part=id;tagG.add(sp)});
+
+
+/* ---------- jack stroke ---------- */
+const STROKE=3.05,HEAD0=14.586;
+let strokeT=.35, explodeT=0;
+const explodeBase={};
+let pipeOvr=null; /* set by the tubing make-up simulation: height of the string group, independent of the jack head */
+function setStroke(t){strokeT=t;const hy=HEAD0+t*STROKE;
+  head.position.set(0,hy,0);
+  rods.forEach(r=>{const y0=14.5,y1=hy-.05;r.scale.y=Math.max(.01,y1-y0);r.position.y=(y0+y1)/2});
+  pipe.position.y=pipeOvr!==null?pipeOvr:hy+.8;
+  document.getElementById('stroke-o').textContent=Math.round(t*3050).toLocaleString('en-US')+' mm';
+  document.getElementById('stroke').value=Math.round(t*100);}
+function setExplode(t){explodeT=t;PARTS.forEach(p=>{groups[p.id].position.y=t*p.lvl*.75});
+  pipe.visible=t<.02;elevG.visible=elevOn&&t<.02;dimG.visible=dimOn&&t<.02;
+  document.getElementById('explode-o').textContent=t<.02?'Assembled':'+'+(t*15*.75).toFixed(1)+' m';}
+
+
+/* ---------- tubing make-up simulation ----------
+   One tubing joint is picked up from the pipe rack with the gin pole hoist line, swung in beside the work basket,
+   centred over the well, stabbed and threaded into the box of the string held in the jack, then the string is run in
+   with the jack: stroke down carrying the string, slips swap, stroke up empty. All motion is a function of time,
+   so the slider can scrub it. */
+const TJ={L:7.9,HO:.95,RZ:5.0,RY:.75,Y0:25.373,PARK:[0,33,-1.3]};
+const tubG=new THREE.Group();tubG.visible=false;HWUROOT.add(tubG);
+const tubClip=new THREE.Plane(new THREE.Vector3(0,1,0),-8.77); /* world height of the window basket floor: the string disappears into the BOP / well */
+pipe.children.forEach(c=>{c.material.clippingPlanes=[tubClip];c.material.needsUpdate=true});
+renderer.localClippingEnabled=true;
+const tMat=(c,m,r)=>new THREE.MeshStandardMaterial({color:c,metalness:m,roughness:r});
+const jM1=tMat(0x8f98a0,.8,.3),jM2=tMat(0x6a737a,.8,.3),jMk=tMat(0xf2f2f2,.2,.5);
+const hkY=tMat(0xd9a12a,.3,.5),hkD=tMat(0x2a2d30,.5,.5),hkG=tMat(0x5a6268,.6,.4);
+function tmesh(geo,mat,x,y,z,par){const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);m.castShadow=true;m.userData.part='PIPE';par.add(m);return m}
+const jointG=new THREE.Group(),jointS=new THREE.Group();jointG.add(jointS);tubG.add(jointG);
+tmesh(new THREE.CylinderGeometry(.06,.06,TJ.L,14),jM1,0,0,0,jointS);
+tmesh(new THREE.CylinderGeometry(.085,.085,.32,14),jM2,0,TJ.L/2-.16,0,jointS);
+for(let k=0;k<10;k++){const a=k*Math.PI/2,m=tmesh(new THREE.BoxGeometry(.012,.32,.012),jMk,Math.cos(a)*.062,-TJ.L/2+.5+k*.74,Math.sin(a)*.062,jointS);m.rotation.y=-a}
+const hookG=new THREE.Group();tubG.add(hookG);
+tmesh(new THREE.BoxGeometry(.3,.5,.22),hkY,0,-.25,0,hookG);tmesh(new THREE.CylinderGeometry(.05,.05,.14,10),hkD,0,.05,0,hookG);
+[-1,1].forEach(k=>tmesh(new THREE.BoxGeometry(.035,.78,.035),hkD,k*.115,-.89,0,hookG));
+tmesh(new THREE.CylinderGeometry(.14,.14,.22,18),hkG,0,-1.37,0,hookG);
+const cableM=tmesh(new THREE.CylinderGeometry(.018,.018,1,5),hkD,0,0,0,tubG);
+const SHEAVE=gpTilt([0,GPR(38.85),GZ+1.015]);
+function placeBetween(m,a,b){const dx=b[0]-a[0],dy=b[1]-a[1],dz=b[2]-a[2],len=Math.hypot(dx,dy,dz)||1e-6;
+  m.position.set((a[0]+b[0])/2,(a[1]+b[1])/2,(a[2]+b[2])/2);
+  m.quaternion.copy(new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0,1,0),new THREE.Vector3(dx/len,dy/len,dz/len)));return len}
+const tEase=x=>x<.5?2*x*x:1-Math.pow(-2*x+2,2)/2,tClamp=x=>Math.min(1,Math.max(0,x));
+function keyAt(keys,t){if(t<=keys[0][0])return keys[0].slice(1);for(let i=0;i<keys.length-1;i++){const a=keys[i],b=keys[i+1];
+  if(t<=b[0]){const u=tEase((t-a[0])/(b[0]-a[0]));return [0,1,2].map(k=>a[k+1]+(b[k+1]-a[k+1])*u)}}return keys[keys.length-1].slice(1)}
+/* the tag line holds the pin end 12 deg out from the well; the joint is pulled up through the V slot of the pipe guide frame on the work basket (slot at z 2.5, height 16.8) */
+const TLEAN=12*Math.PI/180,TK=Math.tan(TLEAN),ZS=2.5,YS=16.8;
+/* joint top end while it is carried by the hoist line: [height, z, lean of the joint towards the outside] */
+function tpath(t){const zl=y=>ZS+(YS-y)*TK;
+  if(t<5.5)return [TJ.RY,TJ.RZ,0];
+  if(t<10){const u=tEase((t-5.5)/4.5),y1=9.4;return [TJ.RY+(y1-TJ.RY)*u,TJ.RZ+(zl(y1)-TJ.RZ)*u,TLEAN]}
+  if(t<15){const u=tEase((t-10)/5),y=9.4+17*u;return [y,zl(y),TLEAN]}
+  if(t<19.5){const u=tEase((t-15)/4.5);return [26.4,zl(26.4)*(1-u),TLEAN*(1-u)]}
+  if(t<22.5){const u=tEase((t-19.5)/3);return [26.4-.6*u,0,0]}
+  const u=tEase(tClamp((t-22.5)/4));return [25.8+(TJ.Y0-25.8)*u,0,0]}
+/* timeline: attach (stab) 26.5, jib slews the tong in until 29, threading until 32, jib slews out until 34.5, then the jack runs the string in */
+const TIN0=26.5,TIN1=29,TSP1=32,TOUT1=34.5;
+/* jib pose parameter: 0 parked, 1 stand-off beside the pipe, 2 engaged on the connection */
+function jibU(t){if(t<TIN0)return 0;if(t<TIN0+1.5)return tEase((t-TIN0)/1.5);if(t<TIN1)return 1+tEase((t-TIN0-1.5)/(TIN1-TIN0-1.5));
+  if(t<TSP1)return 2;if(t<TSP1+1)return 2-tEase(t-TSP1);if(t<TOUT1)return 1-tEase((t-TSP1-1)/(TOUT1-TSP1-1));return 0}
+/* the last stroke leaves the tubing PROT above the top of the rotary table (0.907 m above the head origin); the jack ends at the bottom of its stroke */
+const RTT=.907,PROT=1,K3=(TJ.Y0-(.35+2)*STROKE-(HEAD0+RTT+PROT))/STROKE;
+/* running in: [type, seconds, jack stroke from, to] */
+const TSEGS=[['carry',1.6,.35,0],['swap',.8],['up',3,0,1],['swap',.8],['carry',3.6,1,0],['swap',.8],['up',3,0,1],['swap',.8],['carry',3.6,1,0],['swap',.8],['up',1.8,0,K3],['swap',.8],['carry',2,K3,0]];
+const TLOW=TOUT1,TEND=TLOW+TSEGS.reduce((a,g)=>a+g[1],0),TOT=TEND+3;
+/* roustabout at the far end of the pipe rack, holding the tag line tied near the pin end */
+const RB={x:.45,z:15.9};
+const rbM={suit:tMat(0xe8590c,.05,.85),hat:tMat(0xf4f4f0,.2,.5),skin:tMat(0xd9a77c,0,.8),boot:tMat(0x24282b,.1,.8),glove:tMat(0xf2c200,0,.8),band:tMat(0xdfe84a,0,.6),rope:tMat(0xff7a00,0,.8)};
+const rbG=new THREE.Group();rbG.position.set(RB.x,-1,RB.z);tubG.add(rbG);
+const rbT=new THREE.Group();rbT.position.set(0,.88,0);rbG.add(rbT);
+[-1,1].forEach(k=>{tmesh(new THREE.CylinderGeometry(.062,.07,.8,10),rbM.suit,k*.1,.5,0,rbG);tmesh(new THREE.BoxGeometry(.13,.1,.3),rbM.boot,k*.1,.05,-.04,rbG)});
+tmesh(new THREE.BoxGeometry(.42,.6,.24),rbM.suit,0,.3,0,rbT);tmesh(new THREE.BoxGeometry(.43,.05,.25),rbM.band,0,.34,0,rbT);
+tmesh(new THREE.SphereGeometry(.105,14,10),rbM.skin,0,.72,-.01,rbT);
+tmesh(new THREE.SphereGeometry(.125,16,8,0,Math.PI*2,0,Math.PI/2),rbM.hat,0,.74,-.01,rbT);tmesh(new THREE.CylinderGeometry(.165,.165,.015,18),rbM.hat,0,.745,-.04,rbT);
+function rbLimb(a,b,r,mat){const m=tmesh(new THREE.CylinderGeometry(r,r,1,8),mat,0,0,0,rbT);m.scale.set(1,placeBetween(m,a,b),1)}
+[-1,1].forEach(k=>{rbLimb([k*.25,.52,0],[k*.2,.28,-.2],.045,rbM.suit);rbLimb([k*.2,.28,-.2],[k*.06,.30,-.42],.04,rbM.suit);tmesh(new THREE.BoxGeometry(.09,.09,.09),rbM.glove,k*.05,.30,-.42,rbT)});
+const rbLabel=textSprite('Roustabout',{bar:'#d96a0b',size:.42});rbLabel.position.set(RB.x,1.15,RB.z);tubG.add(rbLabel);
+const ROPE_N=10,ropeM=[];for(let k=0;k<ROPE_N;k++)ropeM.push(tmesh(new THREE.CylinderGeometry(.017,.017,1,5),rbM.rope,0,0,0,tubG));
+function ropeSet(a,b,sag){const pts=[];for(let k=0;k<=ROPE_N;k++){const u=k/ROPE_N;pts.push([a[0]+(b[0]-a[0])*u,a[1]+(b[1]-a[1])*u-sag*4*u*(1-u),a[2]+(b[2]-a[2])*u])}
+  ropeM.forEach((m,k)=>{m.visible=true;m.scale.set(1,placeBetween(m,pts[k],pts[k+1]),1)})}
+function rbApply(t,B,T){
+  const lean=.24*tClamp((t-3)/4)*(1-.7*tClamp((t-15)/4.5))*(1-tClamp((t-19.5)/4));rbT.rotation.x=lean;
+  const c=Math.cos(lean),sn=Math.sin(lean),hand=[RB.x,-1+.88+.30*c+.42*sn,RB.z+.30*sn-.42*c];
+  const f=.35/TJ.L,tie=[0,B[1]+(T[1]-B[1])*f,B[2]+(T[2]-B[2])*f],rel=tEase(tClamp((t-24.5)/3));
+  if(rel>=1){ropeM.forEach(m=>{m.visible=false});return}
+  const end=[0,1,2].map(k=>tie[k]+(hand[k]-tie[k])*rel),dist=Math.hypot(end[0]-hand[0],end[1]-hand[1],end[2]-hand[2]);
+  ropeSet(hand,end,dist*(.006+.07*tClamp((t-19)/3.5)))}
+function lowState(t){let ht=.35,Y=TJ.Y0,a=0,kind='hold';
+  for(const g of TSEGS){const b=a+g[1];kind=g[0];
+    if(t>=b){if(g[0]!=='swap'){ht=g[3];if(g[0]==='carry')Y-=(g[2]-g[3])*STROKE}a=b;continue}
+    const u=tEase((t-a)/g[1]);if(g[0]!=='swap'){ht=g[2]+(g[3]-g[2])*u;if(g[0]==='carry')Y-=(g[2]-ht)*STROKE}
+    return {ht,Y,kind}}
+  return {ht,Y,kind:'done'}}
+function tubCaption(t){
+  if(t<4)return '1 · The hoist line comes down from the gin pole crown to the end of the pipe rack';
+  if(t<5.5)return '2 · The elevator latches under the box of the tubing joint';
+  if(t<10)return '3 · The box end is lifted. A roustabout at the end of the pipe rack holds a tag line on the pin end and keeps it angled out, away from the well';
+  if(t<15)return '4 · The joint is hoisted and slides up through the V slot of the pipe guide frame on the work basket, which centres it';
+  if(t<19.5)return '5 · Swung in over the pipe guide and centred above the well while the roustabout eases out the tag line';
+  if(t<22.5)return '6 · The pin end is lowered towards the box of the string held in the jack';
+  if(t<TIN0)return '7 · The pin is stabbed into the box; the roustabout releases the tag line and reels it in';
+  if(t<TIN1)return '8 · The jib slews in and the tong winch lifts the power tong onto the connection';
+  if(t<TSP1)return '9 · The power tong spins the pin into the box and makes up the joint';
+  if(t<TLOW)return '10 · The jib slews the power tong back out; the elevator is released and the hoist line goes back up';
+  if(t<TEND){const k=lowState(t-TLOW).kind;
+    return k==='carry'?'11 · Running in: the jack strokes down carrying the string on the traveling slips':k==='up'?'11 · Running in: the jack strokes back up empty, the stationary slips hold the string':'11 · Slips change over';}
+  return '12 · The joint is run into the well. The tubing stands about 1 m above the rotary table, ready for the next joint';}
+let tubOn=false,tubT=0,tubUsed=false;
+const tubEl={sl:document.getElementById('tub'),o:document.getElementById('tub-o'),b:document.getElementById('tub-play'),c:document.getElementById('tub-cap'),r:document.getElementById('tub-reset')};
+function tubApply(t){tubUsed=true;tubG.visible=true;HOIST_STATIC.forEach(m=>m.visible=false);
+  const att=t>=TIN0,low=t>=TLOW?lowState(t-TLOW):null;
+  const Pt=att?[low?low.Y:TJ.Y0,0,0]:tpath(t),T=[0,Pt[0],Pt[1]],ph=Pt[2];
+  let H;
+  if(t<4){const u=tEase(tClamp(t/4)),P=TJ.PARK,E=[0,TJ.RY+TJ.HO,TJ.RZ];H=[0,1,2].map(k=>P[k]+(E[k]-P[k])*u)}
+  else if(t<TSP1)H=[T[0],T[1]+TJ.HO,T[2]];
+  else{const u=tEase(tClamp((t-TSP1)/5)),S=[0,TJ.Y0+TJ.HO,0],P=TJ.PARK;H=[0,1,2].map(k=>S[k]+(P[k]-S[k])*u)}
+  /* joint: top end T; the pin end drags on the rack, then hangs from the tag line leaning out, then hangs free */
+  let B;const dy=T[1]-TJ.RY;
+  if(t<10&&dy<TJ.L*Math.cos(TLEAN))B=[0,TJ.RY,T[2]+Math.sqrt(TJ.L*TJ.L-dy*dy)];else B=[0,T[1]-TJ.L*Math.cos(ph),T[2]+TJ.L*Math.sin(ph)];
+  placeBetween(jointG,B,T);
+  const spin=2*Math.PI*6*tEase(tClamp((t-TIN1)/(TSP1-TIN1)));jointS.rotation.y=spin;
+  [jM1,jM2,jMk].forEach(m=>{const want=att?[tubClip]:[];if((m.clippingPlanes||[]).length!==want.length){m.clippingPlanes=want;m.needsUpdate=true}});
+  hookG.position.set(H[0],H[1],H[2]);
+  cableM.scale.set(1,placeBetween(cableM,[SHEAVE[0],SHEAVE[1],SHEAVE[2]],H),1);
+  rbApply(t,B,T);
+  jibApply(jibU(t),spin);
+  if(low){pipeOvr=low.Y-8.92;setStroke(low.ht)}else{pipeOvr=null;setStroke(.35)}
+  tubEl.sl.value=Math.round(t/TOT*1000);tubEl.o.textContent=t.toFixed(0)+' / '+TOT.toFixed(0)+' s';
+  tubEl.c.hidden=false;tubEl.c.textContent=tubCaption(t)}
+function tubReset(){tubOn=false;tubT=0;tubG.visible=false;HOIST_STATIC.forEach(m=>m.visible=true);pipeOvr=null;setStroke(.35);jibApply(0,0);
+  tubEl.sl.value=0;tubEl.o.textContent='Ready';tubEl.b.textContent='Run';tubEl.b.classList.remove('on');tubEl.c.hidden=true;tubUsed=false}
+tubEl.b.addEventListener('click',()=>{
+  if(tubOn){tubOn=false;tubEl.b.textContent='Run';tubEl.b.classList.remove('on');return}
+  playing=false;play.classList.remove('on');play.textContent='Run';
+  if(tubT>=TOT||!tubUsed){tubT=0;go('tubing')}
+  tubOn=true;tubEl.b.textContent='Pause';tubEl.b.classList.add('on');tubApply(tubT)});
+tubEl.r.addEventListener('click',tubReset);
+tubEl.sl.addEventListener('input',()=>{tubOn=false;tubEl.b.textContent='Run';tubEl.b.classList.remove('on');tubT=tubEl.sl.value/1000*TOT;tubApply(tubT)});
+function tubStep(dt){if(!tubOn)return;tubT=Math.min(TOT,tubT+dt);tubApply(tubT);if(tubT>=TOT){tubOn=false;tubEl.b.textContent='Replay';tubEl.b.classList.remove('on')}}
+/* ---------- selection ---------- */
+let selected=null,isolate=false;
+function paint(){PARTS.forEach(p=>{const on=!selected||p.id===selected;mats[p.id].forEach(m=>{
+  if(!(m.userData&&m.userData.lamp))m.emissive.setHex(p.id===selected?0x5a3a00:0x000000);
+  const ghost=isolate&&selected&&!on;m.transparent=ghost;m.opacity=ghost?.1:1;m.depthWrite=!ghost;m.needsUpdate=true;})});
+  document.querySelectorAll('.bom li[data-id]').forEach(li=>li.classList.toggle('active',li.dataset.id===selected));}
+function hex(n){return '#'+n.toString(16).padStart(6,'0')}
+function esc(s){return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
+function showPart(id){const p=P[id],el=document.getElementById('part');document.getElementById('part-tag').textContent=p?('POS '+p.pos):'none selected';
+  if(!p){el.innerHTML='<p>Click a component on the model or in the list to see its dimensions and data.</p><dl class="kv"><dt>Pulling capacity</dt><dd>460,000 lbs</dd><dt>Snubbing capacity</dt><dd>230,000 lbs</dd><dt>Jack stroke</dt><dd>10 ft</dd><dt>Through bore</dt><dd>32 in</dd><dt>BOP</dt><dd>13-5/8" 5,000 psi</dd><dt>Top of gin pole</dt><dd>+36,617 mm</dd><dt>Weight</dt><dd>78 t (excl. drill pipe)</dd></dl>';return}
+  el.innerHTML='<span class="pos">POS '+esc(p.pos)+' · '+esc(p.grp)+'</span><h3>'+esc(p.name)+'</h3><p class="en">'+esc(p.en)+'</p><p>'+esc(p.desc)+'</p><dl class="kv">'+p.specs.map(([k,v])=>'<dt>'+esc(k)+'</dt><dd>'+esc(v)+'</dd>').join('')+'</dl>';}
+function select(id){selected=(id&&id!==selected)?id:null;paint();showPart(selected);}
+const ray=new THREE.Raycaster(),mouse=new THREE.Vector2();let downAt=null;
+renderer.domElement.addEventListener('pointerdown',e=>{downAt=[e.clientX,e.clientY]});
+renderer.domElement.addEventListener('pointerup',e=>{if(!downAt)return;const d=Math.hypot(e.clientX-downAt[0],e.clientY-downAt[1]);downAt=null;if(d>5)return;
+  const r=renderer.domElement.getBoundingClientRect();mouse.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);ray.setFromCamera(mouse,camera);
+  const objs=[];PARTS.forEach(p=>{if(groups[p.id].visible)groups[p.id].traverse(o=>{if(o.isMesh&&!(o.material.transparent&&o.material.opacity<.5))objs.push(o)})});
+  const hit=ray.intersectObjects(objs,false)[0];select(hit?hit.object.userData.part:null);});
+
+/* ---------- BOM list ---------- */
+const eyeSVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+const bom=document.getElementById('bom');let lastGrp='';
+const order=['01','02','03','04','BOP','PM','06','05','07','09','08','10','PIPE','11','12','14','15','16','17','EL','20','PLAT','HPU','GEN','AIR','MCC','DT','ACC','MP','DE','MT','MGS','PR'];
+const grpOrder=['Skid and skidding','Well control','Tower structure','Jack and work basket','Lifting equipment','Access and safety','Auxiliary equipment'];
+grpOrder.forEach(g=>{const li=document.createElement('li');li.className='sec';li.textContent=g;bom.appendChild(li);
+  order.filter(id=>P[id].grp===g).forEach(id=>{const p=P[id];const li=document.createElement('li');li.dataset.id=id;
+    li.innerHTML='<span class="n">'+p.pos+'</span><button class="row" type="button"><span class="t"><span class="sw" style="background:'+hex(p.col)+'"></span>'+esc(p.name)+'</span></button><button class="eye" type="button" aria-pressed="true" aria-label="Show or hide '+esc(p.name)+'">'+eyeSVG+'</button>';
+    li.querySelector('.row').addEventListener('click',()=>select(id));li.querySelector('.n').addEventListener('click',()=>select(id));
+    li.querySelector('.eye').addEventListener('click',ev=>{const b=ev.currentTarget,v=b.getAttribute('aria-pressed')!=='true';b.setAttribute('aria-pressed',v);groups[id].visible=v;tagG.children.forEach(t=>{if(t.userData.part===id)t.visible=v});});
+    bom.appendChild(li);});});
+
+/* ---------- views ---------- */
+const views={
+  iso:{p:[-30,24,32],t:[3.5,13,-1]},
+  front:{p:[5,16,62],t:[5,16,0]},
+  right:{p:[-60,18,-2],t:[0,18,-2]},
+  top:{p:[7,78,-2.5],t:[7,0,-2.5]},
+  basket:{p:[-7.5,21.5,9],t:[0,16.2,0]},
+  site:{p:[-38,40,44],t:[7,2,-2]},
+  tubing:{p:[-34,24,22],t:[0,13,3]}};
+let anim=null;
+function go(name){const v=views[name];anim={p0:camera.position.clone(),t0:controls.target.clone(),p1:new THREE.Vector3(...v.p),t1:new THREE.Vector3(...v.t),k:0};
+  ['iso','front','right','top','basket','site'].forEach(n=>document.getElementById('v-'+n).setAttribute('aria-pressed',n===name));}
+['iso','front','right','top','basket','site'].forEach(n=>document.getElementById('v-'+n).addEventListener('click',()=>go(n)));
+let elevOn=true,dimOn=true;
+function tog(id,fn){const b=document.getElementById(id);b.addEventListener('click',()=>{const v=b.getAttribute('aria-pressed')!=='true';b.setAttribute('aria-pressed',v);fn(v)})}
+tog('t-elev',v=>{elevOn=v;elevG.visible=v&&explodeT<.02});
+tog('t-dim',v=>{dimOn=v;dimG.visible=v&&explodeT<.02});
+tog('t-iso',v=>{isolate=v;paint()});
+tog('t-tag',v=>{tagG.visible=v});
+/* night view: dims daylight, lights every floodlight glass, shows the light beams and switches on spot lights at a set of the lamps */
+const NSPOTS=[];
+function setNight(on){NIGHT=on;hemi.intensity=on?.09:.75;sun.intensity=on?.03:.9;fill.intensity=on?.02:.35;
+  LAMPMATS.forEach(m=>{m.emissive.setHex(on?0xfff1c8:0x000000);m.emissiveIntensity=on?1.6:1});
+  LAMPS.forEach(l=>{l.cone.visible=on});
+  if(on&&!NSPOTS.length){const step=Math.max(1,Math.ceil(LAMPS.length/10));
+    LAMPS.forEach((l,i)=>{if(i%step&&!l.force)return;const sp=new THREE.SpotLight(0xffeccc,2.2,34,.85,.65,1);const p=new THREE.Vector3();l.head.getWorldPosition(p);
+      sp.position.copy(p);sp.target.position.set(p.x+l.dir[0]*(l.force?20:8),p.y+l.dir[1]*(l.force?20:8),p.z+l.dir[2]*(l.force?20:8));scene.add(sp);scene.add(sp.target);NSPOTS.push(sp);});}
+  /* red obstruction light on top of the gin pole glows red at night */
+  if(OBSL){OBSL.material.emissive.setHex(on?0xff1a0f:0x000000);OBSL.material.emissiveIntensity=on?3:1;
+    if(on&&!OBSPT){const c=new THREE.Vector3();OBSL.updateWorldMatrix(true,false);new THREE.Box3().setFromObject(OBSL).getCenter(c);OBSPT=new THREE.PointLight(0xff2010,2.2,18,1.6);OBSPT.position.copy(c);scene.add(OBSPT);
+      const g=new THREE.Mesh(new THREE.SphereGeometry(.3,16,12),new THREE.MeshBasicMaterial({color:0xff2a1a,transparent:true,opacity:.35,depthWrite:false}));g.position.copy(c);scene.add(g);OBSPT.userData.glow=g;}
+    if(OBSPT){OBSPT.visible=on;OBSPT.userData.glow.visible=on;}}
+  NSPOTS.forEach(s=>{s.visible=on});applyTheme();}
+tog('t-night',v=>setNight(v));
+
+
+const sIn=document.getElementById('stroke'),eIn=document.getElementById('explode'),play=document.getElementById('play');
+let playing=false,ph=Math.acos(1-2*.35);
+sIn.addEventListener('input',()=>{if(tubUsed)tubReset();playing=false;play.classList.remove('on');play.textContent='Run';setStroke(sIn.value/100)});
+eIn.addEventListener('input',()=>setExplode(eIn.value/100));
+play.addEventListener('click',()=>{if(tubUsed)tubReset();playing=!playing;play.classList.toggle('on',playing);play.textContent=playing?'Stop':'Run';ph=Math.acos(1-2*strokeT)});
+
+/* ---------- resize / loop ---------- */
+function resize(){if(rec)return;const w=stage.clientWidth,h=stage.clientHeight;renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}
+
+/* ---------- video export ---------- */
+const sm=t=>t*t*(3-2*t), lerp=(a,b,t)=>a+(b-a)*t;
+const A0=Math.atan2(33,-33.5);
+const SHOTS={
+  site:{name:'Site overview',spin:2*Math.PI,keys:[{t:0,T:[7,3,-2],R:60,y:36,l:'Platform layout · 35 × 40 m · auxiliary equipment'},{t:1,T:[7,3,-2],R:60,y:36}],
+    stroke:()=>.35,explode:()=>0},
+  orbit:{name:'360° orbit',spin:2*Math.PI,keys:[{t:0,T:[4,15,-1],R:46,y:22,l:'360° orbit'},{t:1,T:[4,15,-1],R:46,y:22}],
+    stroke:()=>.35,explode:()=>0},
+  jack:{name:'Jack stroke',spin:.9*Math.PI,keys:[{t:0,T:[0,16.8,0],R:11,y:20.5,l:'Hydraulic jack · 10 ft stroke · 460,000 lbs pull'},{t:1,T:[0,16.8,0],R:11,y:20.5}],
+    stroke:(t,d)=>(1-Math.cos(t*Math.PI*2*Math.max(1,Math.round((d||20)/7))))/2,explode:()=>0},
+  explode:{name:'Exploded view',spin:.6*Math.PI,keys:[{t:0,T:[3,16,-1],R:50,y:24,l:'Module stack · exploded view'},{t:1,T:[3,19,-1],R:54,y:26}],
+    stroke:()=>.35,explode:t=>sm(Math.sin(Math.PI*t))},
+  tour:{name:'Full tour',spin:1.8*Math.PI,keys:[
+    {t:0,T:[7,3,-2],R:60,y:36,l:'Platform layout · auxiliary equipment'},
+    {t:.14,T:[7,3,-2],R:60,y:36,l:'PV Drilling HWU 460K · overall'},
+    {t:.22,T:[4,15,-1],R:46,y:22},
+    {t:.3,T:[4,15,-1],R:46,y:22,l:'BOP stack 13-5/8" 5,000 psi'},
+    {t:.42,T:[0,4.6,0],R:12,y:6.5},
+    {t:.52,T:[0,4.6,0],R:12,y:6.5,l:'Jack system and work basket +16,500'},
+    {t:.62,T:[0,16.8,0],R:11,y:20.5},
+    {t:.8,T:[0,16.8,0],R:11,y:20.5,l:'Work basket and gin pole'},
+    {t:1,T:[3,19,-1],R:54,y:27}],
+    stroke:t=>t<.55?.35:t<.8?(1-Math.cos((t-.55)/.25*Math.PI*2*1.5+Math.acos(1-2*.35)))/2:.35,
+    explode:()=>0}
+};
+/* night view: slow swing round the lit unit, about 4 s */
+SHOTS.night={name:'Night view',night:true,spin:.35*Math.PI,keys:[{t:0,T:[5,13,-1],R:52,y:22,l:'Night view · floodlights, gin pole uplight and obstruction light'},{t:1,T:[4,15,-1],R:46,y:24}],
+  stroke:()=>.35,explode:()=>0};
+/* full tour = every shot in turn: site overview, 360° orbit, jack stroke, then 4 s of night view */
+const NIGHT_S=4;
+function shotPlan(shot,dur){if(shot==='night')return [{shot:'night',dur:NIGHT_S}];
+  if(shot!=='tour')return [{shot,dur}];
+  const d=Math.max(2,(dur-NIGHT_S)/3);return [{shot:'site',dur:d},{shot:'orbit',dur:d},{shot:'jack',dur:d},{shot:'night',dur:NIGHT_S}];}
+/* slow camera: the swing round the unit never goes faster than about 4 degrees per second */
+const MAXW=4*Math.PI/180;
+function shotAt(name,t,dur){const S=SHOTS[name],K=S.keys,spin=Math.sign(S.spin)*Math.min(Math.abs(S.spin),MAXW*(dur||20));let i=0;while(i<K.length-2&&t>K[i+1].t)i++;
+  const a=K[i],b=K[i+1],u=sm(Math.min(1,Math.max(0,(t-a.t)/((b.t-a.t)||1))));
+  const T=[0,1,2].map(k=>lerp(a.T[k],b.T[k],u)),R=lerp(a.R,b.R,u),y=lerp(a.y,b.y,u),ang=A0+spin*t;
+  let label=K[0].l;for(const k of K)if(k.l&&t>=k.t)label=k.l;
+  return {T,pos:[T[0]+Math.cos(ang)*R,y,T[2]+Math.sin(ang)*R],stroke:S.stroke(t,dur),explode:S.explode(t),label}}
+let rec=null,dl=null,lastVideo=null;
+const vx={card:document.getElementById('vexport'),go:document.getElementById('v-rec'),save:document.getElementById('v-save'),st:document.getElementById('v-status'),bar:document.getElementById('v-bar'),
+  shot:document.getElementById('v-shot'),res:document.getElementById('v-res'),dur:document.getElementById('v-dur'),cap:document.getElementById('v-cap')};
+/* the night view is a fixed 4 s shot, so the length list does not apply to it */
+vx.shot.addEventListener('change',()=>{vx.dur.disabled=vx.shot.value==='night'});
+function pickMime(){if(!window.MediaRecorder)return null;
+  return ['video/mp4;codecs=avc1.640028','video/mp4;codecs=avc1','video/mp4','video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'].find(m=>{try{return MediaRecorder.isTypeSupported(m)}catch(e){return false}})||null}
+function caption(ctx,W,H,label){const bh=Math.round(H*.1),pad=Math.round(H*.035),fs=Math.round(bh*.36);
+  ctx.fillStyle='rgba(18,23,27,.78)';ctx.fillRect(0,H-bh,W,bh);ctx.fillStyle='#f0b429';ctx.fillRect(0,H-bh,Math.max(4,W*.004),bh);
+  ctx.textBaseline='middle';ctx.fillStyle='#ffffff';ctx.font='700 '+fs+'px "Barlow Condensed", "Arial Narrow", sans-serif';
+  ctx.fillText('PV DRILLING HWU 460K',pad,H-bh*.66);
+  ctx.font='500 '+Math.round(fs*.72)+'px "Barlow", Arial, sans-serif';ctx.fillStyle='#d6dde3';ctx.fillText(label,pad,H-bh*.28);
+  ctx.textAlign='right';ctx.font='500 '+Math.round(fs*.6)+'px "JetBrains Mono", monospace';ctx.fillStyle='#d6dde3';
+  ctx.fillText('Jack stroke '+Math.round(strokeT*3048).toLocaleString('en-US')+' mm',W-pad,H-bh*.66);
+  ctx.fillStyle='#9aa6af';ctx.fillText('Drawing S00012731 rev IFA02',W-pad,H-bh*.28);ctx.textAlign='left';}
+function startRec(){const mime=pickMime();if(!mime){vx.st.textContent='This browser cannot record video. Try Chrome, Edge or Safari.';return}
+  const [W,H]=vx.res.value.split('x').map(Number),shot=vx.shot.value,plan=shotPlan(shot,Number(vx.dur.value)),dur=plan.reduce((a,p)=>a+p.dur,0);
+  const out=document.createElement('canvas');out.width=W;out.height=H;const ctx=out.getContext('2d');
+  let mr;try{mr=new MediaRecorder(out.captureStream(30),{mimeType:mime,videoBitsPerSecond:W*H>1.5e6?12e6:7e6})}catch(e){vx.st.textContent='Recording could not start in this browser.';return}
+  const chunks=[];mr.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};
+  rec={t0:performance.now(),dur,shot,plan,W,H,ctx,out,mr,mime,chunks,cap:vx.cap.checked,
+    saved:{p:camera.position.clone(),t:controls.target.clone(),stroke:strokeT,explode:explodeT,playing,night:NIGHT}};
+  mr.onstop=finishRec;
+  playing=false;play.classList.remove('on');play.textContent='Run';anim=null;controls.enabled=false;
+  renderer.setPixelRatio(1);renderer.setSize(W,H,false);camera.aspect=W/H;camera.updateProjectionMatrix();
+  vx.go.textContent='Stop recording';vx.save.hidden=true;vx.bar.hidden=false;vx.bar.value=0;
+  vx.st.textContent='Recording '+SHOTS[shot].name.toLowerCase()+' at '+W+'×'+H+'…';
+  mr.start(500);}
+function stepRec(now){const el=Math.min(rec.dur,(now-rec.t0)/1000),t=el/rec.dur;
+  let a=0,seg=rec.plan[rec.plan.length-1];for(const p of rec.plan){if(el<a+p.dur){seg=p;break}a+=p.dur}
+  const lt=Math.min(1,(el-rec.plan.slice(0,rec.plan.indexOf(seg)).reduce((x,p)=>x+p.dur,0))/seg.dur);
+  const wantNight=!!SHOTS[seg.shot].night||rec.saved.night;if(NIGHT!==wantNight)setNight(wantNight);
+  const s=shotAt(seg.shot,lt,seg.dur);
+  camera.position.set(...s.pos);controls.target.set(...s.T);camera.lookAt(controls.target);
+  setStroke(s.stroke);setExplode(s.explode);
+  renderer.render(scene,camera);
+  rec.ctx.drawImage(renderer.domElement,0,0,rec.W,rec.H);if(rec.cap)caption(rec.ctx,rec.W,rec.H,s.label);
+  vx.bar.value=t;if(t>=1&&rec.mr.state==='recording')rec.mr.stop();}
+function finishRec(){const r=rec;rec=null;controls.enabled=true;
+  camera.position.copy(r.saved.p);controls.target.copy(r.saved.t);if(NIGHT!==r.saved.night)setNight(r.saved.night);setStroke(r.saved.stroke);setExplode(r.saved.explode);eIn.value=Math.round(r.saved.explode*100);
+  resize();vx.go.textContent='Record video';vx.bar.hidden=true;
+  const blob=new Blob(r.chunks,{type:r.mime.split(';')[0]});
+  if(!blob.size){vx.st.textContent='The recording came out empty. Keep this tab visible while recording and try again.';return}
+  const ext=r.mime.indexOf('mp4')>-1?'mp4':'webm';
+  lastVideo={blob,name:'PVD-HWU-460K-'+r.shot+'-'+r.W+'x'+r.H+'.'+ext};
+  vx.save.hidden=false;vx.save.textContent='Save '+ext.toUpperCase()+' ('+(blob.size/1048576).toFixed(1)+' MB)';
+  vx.st.textContent=(r.stopped?'Stopped early. ':'')+'Video ready.';}
+vx.go.addEventListener('click',()=>{if(rec){rec.stopped=true;if(rec.mr.state==='recording')rec.mr.stop();return}startRec()});
+vx.save.addEventListener('click',async()=>{if(!lastVideo||!dl)return;vx.st.textContent='Waiting for you to confirm the save…';
+  try{await dl.save({filename:lastVideo.name,data:lastVideo.blob});vx.st.textContent='Saved '+lastVideo.name+'.'}
+  catch(e){const c=e&&e.code;vx.st.textContent=c==='declined'?'Save cancelled. The video is still here if you want to save it.':c==='rate_limited'?'A save prompt is already open. Finish it, then try again.':c==='too_large'?'The file is too large to save here. Record a shorter clip or a lower resolution.':'Saving is not available in this view.'}});
+(async()=>{try{dl=window.claude&&window.claude.use?await window.claude.use('downloads'):null}catch(e){dl=null}
+  if(dl&&pickMime()){vx.card.hidden=false;const m=pickMime();vx.st.textContent='Records '+(m.indexOf('mp4')>-1?'MP4':'WebM')+' from the current model: visible components, isolation and labels stay as you set them.'}})();
+new ResizeObserver(resize).observe(stage);resize();
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+camera.position.set(...views.iso.p);controls.target.set(...views.iso.t);controls.update();
+let last=performance.now();
+const baseScales=new Map();
+[elevG,dimG,tagG].forEach(g=>g.children.forEach(c=>{if(c.isSprite)baseScales.set(c,c.scale.clone())}));
+function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;
+  if(rec){const f=Math.min(2.4,Math.max(.7,camera.position.distanceTo(controls.target)/55));baseScales.forEach((b,s)=>s.scale.set(b.x*f,b.y*f,1));stepRec(now);requestAnimationFrame(loop);return}
+  if(anim){anim.k=Math.min(1,anim.k+dt*(reduce?10:1.6));const e=anim.k<.5?2*anim.k*anim.k:1-Math.pow(-2*anim.k+2,2)/2;
+    camera.position.lerpVectors(anim.p0,anim.p1,e);controls.target.lerpVectors(anim.t0,anim.t1,e);if(anim.k>=1)anim=null;}
+  if(playing){ph+=dt*.55;setStroke((1-Math.cos(ph))/2)}
+  tubStep(dt);
+  const f=Math.min(2.4,Math.max(.7,camera.position.distanceTo(controls.target)/55));
+  baseScales.forEach((b,s)=>s.scale.set(b.x*f,b.y*f,1));
+  controls.update();renderer.render(scene,camera);requestAnimationFrame(loop)}
+applyTheme();
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',applyTheme);
+new MutationObserver(applyTheme).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+setStroke(.35);showPart(null);
+requestAnimationFrame(loop);
+})();
+</script>
+<script>
+(function(){
+const S=[
+ ['General specifications',[['Rig name / type','PV DRILLING HWU / Workover Unit'],['Design','460K Hydraulic Workover Unit'],['Builder / year','Drillmec S.p.A – Italy / 2026'],['Overall dimensions','L 34.8 m × W 30.5 m × H 46.3 m'],['Max. working depth','30,000 ft'],['Total weight','78 t (mast, without drill pipe)'],['Heaviest load','13 t (15 m skidding beam without 3 m extension)'],['Longest load','15 m (15 m skidding beam + 3 m extension)'],['Total number of loads','70 (40 rig equipment + 30 drill pipe bundles)'],['Rig-up time','72 h; 12 h to prepare and skid to the next well slot incl. BOP hanging'],['Skidding envelope','14 m × 14 m'],['Pulling capacity','460,000 lbs'],['Snubbing capacity','230,000 lbs'],['Gin pole capacity','Static hook load 10 MT'],['Through bore ID','32 in'],['BOP handling capacity','Max. 30 MT, hanging the BOP for skidding to next well'],['Stroke length','Max. 10 ft'],['Platform required','35 × 40 m (all equipment on platform) or 15 × 15 m (mast on platform, remaining equipment on barge with flexible connections)']]],
+ ['Well control system',[['Annular BOP','1 × Shenkai 13-5/8" spherical, 5,000 psi, API 16A, T20/250, DD/PSL1, c/w flanged test stump and pump'],['Double ram','1 × Shenkai 13-5/8" 5,000 psi, fixed pipe ram 2-7/8"–9-5/8" and blind ram, c/w 4 × 3-1/8" 6B R35 outlets'],['Single ram','1 × Shenkai 13-5/8" 5,000 psi, fixed pipe ram, c/w 2 × 3-1/8" 6B R35 outlets'],['Risers','2 × 2 ft, 2 × 6 ft, 2 × 10 ft Shenkai 13-5/8" 5,000 psi FLG×FLG'],['Accumulator unit','Shenkai 3,000 psi, 264 gal hydraulic oil tank, electric pumps'],['Choke manifold','Shenkai 2-1/16" 10K, H2S service; 1 × 3-1/8" 5K manual and 1 × 3-1/8" 5K hydraulic choke valve'],['Kill manifold','Shenkai 2-1/16" 10K, H2S service; 1 × 3-1/8" 5K manual and 1 × 3-1/8" 5K hydraulic kill valve'],['Gas buster (poorboy)','Drillmec venting gas separator unit']]],
+ ['Mud system',[['Trip tank','50 bbls'],['Mixing tank','100 bbls'],['Active tank','100 bbls'],['Return tank','150 bbls, c/w 1 × Drillmec shale shaker'],['Transfer pumps','2 × Derrick centrifugal, 1,150 rpm, 5" × 6" connection'],['Agitators','3 × Derrick AC centrifugal, 60 HP, one per tank'],['Mud pumps','2 × triplex Drillmec / Metax, 600 HP @ 120 SPM, max. 810 L/min (5" pistons), max. 10,000 psi (3" plungers), ATEX Zone 2 T3 diesel engine'],['Mud pump detail (brochure)','7 in stroke, 25–120 SPM, 3–5 in plungers; 810 L/min @ 4,525 psi (5 in); 290 L/min @ 10,000 psi (3 in); mud or cement'],['Mud manifold','Drillmec 5,000 psi, c/w 2 × bell nipples and flowlines']]],
+ ['Power system',[['Hydraulic engine','Volvo Penta TAD1643VE-B, 565 kW @ 1,900 rpm, c/w 4 × axial piston main pumps and 2 × double vane charge pumps'],['Hydraulic oil tank','3,215 L'],['HPU operating pressure','Dual 3,000 psi and 5,000 psi; ATEX Zone 2 T3, gas sensors with auto shutdown, air/oil cooler, pneumatic starter, 12 h fuel, containerised with sound attenuation'],['Pump drive','Stiebel 4325, max. input 4,800 Nm @ 900 kW; max. per output 2,750 Nm @ 460 kW'],['Generator','Volvo Penta D13MG 381 kW @ 1,800 rpm with Stamford S5L1MC41-1, 497 kVA, 440 V, 3-phase, 60 Hz'],['Air compressor','Compare DLT 1304 C85-14 diesel rotary screw, 8.6 m³/min, 14 bar; B-DRY 600 dryer, AAF 0476 filter']]],
+ ['Handling system',[['Rotary table','Drillmec 14-1/2", 60–100 rpm, max. torque 20,000 lb-ft'],['Jib crane','Drillmec, on telescopic support arm, certified for slick-line and E-line, 2 × 10 MT hydraulic winches, handles tubulars up to 20 m'],['Tong arm','Drillmec 5 MT, c/w hydraulic winch']]],
+ ['Life-saving equipment',[['Breathing apparatus','3 packs']]],
+ ['Accumulator unit',[['Make','Shenkai, c/w remote control'],['Pressure','3,000 psi operating; well pressure 5,000 psi'],['Bottles','24 × 11 gal'],['Reservoir','264 gal'],['Valves','9 × 3-position / 4-way function + bypass'],['Pump modules','BOPC T-series electric, M-series air'],['Remote panels','Graphic air-operated driller panel, auxiliary air-operated panel'],['Accessories','Interconnect hose bundle, alarm and light indication unit'],['Standard','API or DNV 2.7.3, offshore']]],
+ ['MCC unit',[['Type','Motor control center in one container or enclosure, Drillmec'],['Hazardous area','ATEX Zone 2, gas sensors with auto shutdown'],['Function','Feeds all AC users on the rig'],['Panels','Switchgear for generator, motor starters with remote start-stop, feeder panel'],['HVAC','Air conditioning if containerised']]],
+ ['Diesel tank, pipe racks and lighting',[['Diesel tank','≈ 3,100 L rectangular, double wall, 6 outlets, sight glass, 4 lifting points, forklift pockets, manway, lockable filler, gooseneck vent'],['Pipe racks','4 horizontal racks, max. 3 m each, 50 joints 5-1/2 in total'],['Lighting','LED floodlights 220–254 V 50/60 Hz, ATEX Zone 2, emergency Ni-Cd 21.6 V battery'],['Fire extinguishers','10 × CO2 or powder, 5/6 kg, MSA'],['Radios','6 × Motorola ATEX Zone 1, IP67']]]
+];
+const g=document.getElementById('sgrid');
+S.forEach(([t,rows])=>{const d=document.createElement('div');d.className='card';
+  d.innerHTML='<h2>'+t+'</h2><table><tbody>'+rows.map(([k,v])=>'<tr><th scope="row">'+k+'</th><td>'+v+'</td></tr>').join('')+'</tbody></table>';g.appendChild(d)});
+})();
+</script>
